@@ -1,139 +1,135 @@
 # LoomDB 🧶
 
-> **A Multi-Modal, Local-First, AI-Native Database Engine.**  
-> *Weaving Relational, Document, Vector, Time-Series, and Graph paradigms into a single zero-overhead storage engine.*
+> **The World's Lightest, Most Versatile Multi-Modal Database.**  
+> *Sub-megabyte binary. Sub-megabyte RAM footprint. Single-file `.loom` container. Runs everywhere: from WebAssembly in the browser and IoT micro-controllers to multi-core cloud servers.*
 
 [![Status](https://img.shields.io/badge/status-active--design%20%26%20development-blue.svg)](#)
 [![License](https://img.shields.io/badge/license-Apache--2.0%20%2F%20MIT-green.svg)](#)
 [![Language](https://img.shields.io/badge/language-Rust%202021-orange.svg)](#)
+[![WebAssembly](https://img.shields.io/badge/target-wasm32--unknown--unknown-purple.svg)](#)
+[![Footprint](https://img.shields.io/badge/binary%20size-%3C%20850%20KB-success.svg)](#)
 
 ---
 
-## 🌟 Why LoomDB?
+## 🌟 The Vision: Lighter than SQLite, Smarter than Postgres
 
-Today's application developers are forced to stitch together a fragmented database zoo:
-* **PostgreSQL / MySQL** for structured relational records and transactions.
-* **MongoDB / CouchDB** for flexible, schema-less JSON documents.
-* **Pinecone / Milvus / Qdrant** for vector embeddings and semantic search.
-* **InfluxDB / Timescale** for telemetry and time-stamped events.
-* **Redis** for in-memory caching and reactive pub/sub.
+Most developers today want a database that is **instant, zero-config, and embeddable** like SQLite, but SQLite was built in 2000 for simple relational tables. When modern projects need:
+* **JSON documents** (like MongoDB)
+* **AI Vector Search & Embeddings** (like Pinecone/Qdrant)
+* **Time-Series metrics** (like InfluxDB)
+* **Real-time live push queries** (like Firebase/Supabase)
+* **In-browser / Edge execution** (like IndexedDB or Cloudflare D1)
 
-**LoomDB** eliminates this fragmentation. Named after the textile loom that weaves different threads into a single fabric, LoomDB is designed from the ground up to **weave multiple data models into one unified, high-performance engine** with zero runtime penalty.
+...they are forced to abandon lightweight simplicity and run multi-gigabyte Docker stacks or expensive cloud databases.
 
-It runs in two modes:
-1. **Embedded Mode (`in-process`):** Directly linked as a native zero-latency library (like SQLite or RocksDB) inside Rust, Python, Go, Node.js, C/C++, or mobile apps.
-2. **Server Mode (`distributed / standalone`):** Runs as a standalone multi-threaded daemon communicating via gRPC, HTTP/REST, and a high-performance binary protocol.
-
----
-
-## 🚀 Key Highlights & "Missing" Modern Features
-
-LoomDB combines the reliability of battle-tested enterprise engines with capabilities missing in legacy databases:
-
-### 1. Hybrid Multi-Model Engine (Zero Silos)
-* **Documents & Relations:** Store schemaless JSON alongside strictly-typed relational tables with foreign keys and joins.
-* **Native Vector Engine:** First-class vector embeddings with HNSW indexing. Filter metadata and search vectors in a **single atomic pass** (no two-phase fetch bottleneck).
-* **Time-Series Partitioning:** Automatic time-based chunking with Gorilla/XOR compression for time-stamped events.
-* **Graph Traversal:** First-class relationship edges allowing graph traversals without an external Neo4j instance.
-
-### 2. Time-Travel & Branching ("Git for Data")
-* Native Copy-on-Write (CoW) MVCC snapshotting.
-* Query your database at any historical instant: `SELECT * FROM users AS OF TIMESTAMP '2026-11-01T00:00:00Z'`.
-* Zero-copy database branching for safe staging, schema migrations, and CI/CD testing.
-
-### 3. Reactive Live Queries & Push Subscriptions
-* Forget polling. Clients can subscribe to any query expression:
-  ```rust
-  let mut stream = db.subscribe("SELECT * FROM orders WHERE status = 'pending'")?;
-  while let Some(delta) = stream.next().await {
-      println!("Order changed: {:?}", delta);
-  }
-  ```
-* Push-based Change Data Capture (CDC) built into the core WAL engine.
-
-### 4. Local-First & Edge-to-Cloud Sync (CRDT-Powered)
-* Write anywhere, sync seamlessly: run LoomDB on IoT devices, edge nodes, or mobile clients with Conflict-free Replicated Data Types (CRDTs).
-* Automatic delta-sync when network connectivity returns without split-brain corruption.
-
-### 5. Hardware-Accelerated Storage Tiering
-* Tiered storage engine: **Hot** (SIMD-accelerated in-memory cache), **Warm** (NVMe block-compressed LSM-tree), and **Cold** (transparent zero-overhead offload to S3/Blob storage).
-* Direct I/O (`io_uring` on Linux, IOCP on Windows) bypassing OS buffer bloat.
-
-### 6. Zero-Knowledge & Tenant-Level Cryptography
-* Column-level and row-level encryption with AES-256-GCM / ChaCha20-Poly1305.
-* Per-tenant keys natively partitioned for compliant multi-tenant SaaS architectures.
+**LoomDB solves this forever.** It is an open-source, ultra-resourceful database designed to be:
+1. **Lighter than the lightest:** Stripped binary is **< 850 KB**. Idle RAM usage is **< 512 KB**. Zero background thread overhead when idle.
+2. **Single-File Simplicity (`.loom`):** Everything (tables, JSON docs, HNSW vector graphs, WAL, and indexes) lives in a single, portable, memory-mappable `.loom` file. Copy it, email it, backup it, or mount it instantly.
+3. **Run Everywhere (Wasm-First):** Compiles to pure `wasm32-unknown-unknown` to run natively inside web browsers, mobile apps, Edge Workers, and micro-controllers.
+4. **Swiss-Army Knife Multi-Modal:** SQL Relational + Document JSON + Vector Embeddings + Full-Text Search (BM25) + Time-Series + Real-Time Live CDC in one engine.
+5. **Zero External Dependencies:** Built in 100% pure, safe Rust. No C-runtime prerequisites, no bloated external daemons.
+6. **Embedded Web Studio:** A built-in, zero-dependency visual web inspector accessible directly from your browser when running the CLI or server.
 
 ---
 
-## 📂 Project Documentation Map
+## 📊 How LoomDB Compares to Today's Databases
 
-* 🏗️ **[ARCHITECTURE.md](ARCHITECTURE.md)** — Storage engine, memory layout, WAL, MVCC, and query execution pipelines.
-* 📋 **[FEATURES_AND_ROADMAP.md](FEATURES_AND_ROADMAP.md)** — Exhaustive list of modern & cutting-edge features and release phases.
-* 📐 **[SPECIFICATION.md](SPECIFICATION.md)** — File format specifications, disk layouts, binary protocols, and serialization.
-* 🔌 **[API_DESIGN.md](API_DESIGN.md)** — Embedded SDKs, LoomQL syntax, REST/gRPC endpoints, and client drivers.
-* 🛠️ **[CONTRIBUTING.md](CONTRIBUTING.md)** — Developer setup, build instructions, test harness, and style guides.
+| Metric / Capability | **LoomDB** 🧶 | **SQLite** 🪶 | **DuckDB** 🦆 | **MongoDB** 🍃 | **Pinecone / Qdrant** 🎯 |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Idle Memory Footprint** | **< 512 KB** | ~4 MB | ~30 MB | ~350 MB | ~200 MB |
+| **Binary Size (Stripped)** | **< 850 KB** | ~800 KB | ~18 MB | ~120 MB | ~45 MB |
+| **Storage Model** | **Single `.loom` File** | Single `.db` File | Single `.duckdb` | Folder sprawl | Clustered storage |
+| **Native Vector Search (HNSW)** | **Yes (SIMD Fused)** | ❌ No (plugin req) | ❌ Experimental | ❌ Addon | **Yes** |
+| **JSON Document Support** | **Yes (LoomBSON)** | ⚠️ Limited JSON1 | ⚠️ Basic | **Yes** | ❌ Metadata only |
+| **SQL Relational Engine** | **Yes (LoomQL)** | **Yes** | **Yes** | ❌ No | ❌ No |
+| **Real-time Live Subscriptions**| **Yes (Native CDC)** | ❌ No | ❌ No | ⚠️ Change streams | ❌ No |
+| **Browser / Wasm Native** | **Yes (`wasm32`)** | ⚠️ Complex C-Wasm | ⚠️ Large Wasm | ❌ No | ❌ No |
+| **Time-Travel (Git for Data)** | **Yes (`AS OF`)** | ❌ No | ❌ No | ❌ No | ❌ No |
+| **Offline CRDT Sync** | **Yes (Built-in)** | ❌ No | ❌ No | ❌ No | ❌ No |
 
 ---
 
-## ⚡ Quick Architecture Overview
+## 🚀 Ultra-Lightweight Architectural Modes
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Client Applications                      │
-│      Embedded SDK (Rust/Py/JS)  │  gRPC / HTTP / CLI / LoomQL│
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────┐
-│                     LoomDB Core Engine                      │
-├─────────────────────────────────────────────────────────────┤
-│  Query Planner & Optimizer (Cost-based, Vectorized Exec)    │
-│  Multi-Model Router (Relational | Document | Vector | Graph)│
-├─────────────────────────────────────────────────────────────┤
-│  Concurrency & MVCC Manager (Snapshot Isolation / SSI)      │
-│  CRDT Replication & Live Query Pub/Sub Dispatcher           │
-├─────────────────────────────────────────────────────────────┤
-│  Index Layer                                                │
-│  ├─ B+Tree / Masstree (Ordered Relational)                  │
-│  ├─ HNSW Index (Vector Semantic Search)                     │
-│  ├─ Inverted Index / BM25 (Full-Text Search)                │
-│  └─ Radix / Hash (Point-Lookups)                            │
-├─────────────────────────────────────────────────────────────┤
-│  LoomStore (Hybrid LSM-Tree + WiscKey Separation)           │
-│  ├─ MemTable (SkipList / Concurrent ART)                    │
-│  ├─ Write-Ahead Log (WAL with Group Commit & Checkpoints)   │
-│  ├─ Block Cache (Adaptive 2Q / TinyLFU)                     │
-│  └─ SSTable Store (Direct I/O, ZSTD / Gorilla Compression)   │
-└─────────────────────────────────────────────────────────────┘
+LoomDB adapts its memory and execution model according to the host environment:
+
+### Mode 1: The Micro Profile (IoT, Micro-controllers, Mobile, Browser Wasm)
+* **RAM Allocation:** Under **512 KB**.
+* **Page Size:** 1 KB – 4 KB virtual pages.
+* **Vector Index:** 8-bit Scalar Quantization (SQ8) or 1-bit binary vectors for negligible memory usage.
+* **Execution:** Direct zero-copy memory-mapped I/O (`mmap`). No thread pools spawned.
+
+### Mode 2: The Desktop & Edge Profile (CLI tools, local apps, Tauri, Electron)
+* **RAM Allocation:** 8 MB – 32 MB adaptive cache.
+* **Concurrency:** Lock-free SkipList MemTable with background WAL synchronization.
+* **Features:** Full LoomQL, single-pass hybrid search, reactive live subscriptions.
+
+### Mode 3: The Server & Cloud Profile (High-throughput APIs, Microservices)
+* **RAM Allocation:** Dynamically scales from 64 MB to Terabytes.
+* **I/O Engine:** Direct I/O (`io_uring` / IOCP) bypassing OS page-cache bottlenecks.
+* **Features:** Multi-threaded vectorized Morsel execution, gRPC, HTTP REST, SSE, and WebSocket endpoints.
+
+---
+
+## 💻 Quick Start
+
+### 1. Embedded Rust (Zero Latency)
+
+```rust
+use loom_core::LoomDB;
+
+// Opens a single portable .loom file (or creates it if not found)
+let db = LoomDB::open("./my_project.loom")?;
+
+// Insert unstructured JSON with vector embeddings
+db.collection("memories").insert(serde_json::json!({
+    "topic": "Rust Systems Programming",
+    "notes": "LoomDB achieves sub-megabyte memory footprint.",
+    "embedding": [0.12, -0.45, 0.88, 0.05]
+}))?;
+
+// Hybrid Vector + Metadata Query in a single pass
+let results = db.query(
+    "SELECT topic, notes FROM memories 
+     WHERE topic LIKE '%Rust%' 
+     ORDER BY vector_distance(embedding, [0.10, -0.40, 0.85, 0.02]) ASC 
+     LIMIT 1"
+)?;
 ```
 
+### 2. Standalone CLI & Instant Web Studio
+
+Run the single stripped binary to start an instant local database with a built-in visual UI:
+
+```bash
+# Starts the server and opens the embedded Web Studio in your browser
+loomdb server --open-studio
+```
+
 ---
 
-## 📦 Workspace Layout
+## 📦 Modular Workspace Layout
 
 ```
 LoomDB/
-├── Cargo.toml                 # Root Workspace configuration
-├── ARCHITECTURE.md            # Engine deep-dive & design philosophy
-├── FEATURES_AND_ROADMAP.md    # Feature catalog & release milestones
-├── SPECIFICATION.md           # On-disk layout, binary & index specs
-├── API_DESIGN.md              # Client APIs, SDKs & LoomQL reference
-├── CONTRIBUTING.md            # Dev environment & testing guidelines
-├── README.md                  # This file
+├── Cargo.toml                 # Workspace root with micro-binary release profiles
+├── README.md                  # Project overview & philosophy
+├── ARCHITECTURE.md            # Zero-overhead architecture & memory profiles
+├── SPECIFICATION.md           # The Single-File .loom container specification
+├── FEATURES_AND_ROADMAP.md    # Standard vs. Missing Next-Gen features
+├── API_DESIGN.md              # Rust, Python, TypeScript & LoomQL syntax
+├── CONTRIBUTING.md            # Testing, crash injection, and PR guide
 │
 ├── crates/
-│   ├── loom-core/             # Shared types, errors, memory management, config
-│   ├── loom-storage/          # LSM-tree, WAL, SSTable, BlockCache, MVCC
-│   ├── loom-index/            # B+Tree, HNSW Vector, Inverted Full-Text
-│   ├── loom-query/            # LoomQL Parser, AST, Planner, Vectorized Execution
-│   ├── loom-sync/             # CRDT state reconciliation & Raft consensus
-│   ├── loom-server/           # Standalone gRPC, HTTP REST & WebSocket server
-│   └── loom-cli/              # Interactive REPL, admin, and migration tool
-│
-└── sdk/                       # Language bindings (Python, TypeScript, Go)
+│   ├── loom-core/             # Micro-kernel, memory managers, error types
+│   ├── loom-storage/          # Single-file .loom pager, WAL, MemTable, WiscKey
+│   ├── loom-index/            # SIMD HNSW vector graph, BM25 full-text, B+Tree
+│   ├── loom-query/            # LoomQL parser, AST, Morsel vectorized engine
+│   └── loom-cli/              # Ultra-light CLI with embedded Web Studio UI
 ```
 
 ---
 
-## 📜 License
+## 📜 Open Source & Free for Everyone
 
-LoomDB is licensed under dual Apache-2.0 / MIT licenses, granting full freedom to use LoomDB both as an embedded library and as a backend service in open-source and proprietary commercial projects.
+LoomDB is released under the **Apache-2.0 / MIT Dual License**, making it 100% free for open-source and commercial use forever. No hidden enterprise paywalls, no proprietary cloud locks.

@@ -1,158 +1,90 @@
 # LoomDB Technical Specification 📐
 
-This document specifies the exact on-disk binary file formats, memory representations, network wire protocol, and index structures for LoomDB.
+This document specifies the exact on-disk binary container file format (`.loom`), memory representations, network wire protocol, and index structures for LoomDB.
 
 ---
 
-## 1. Directory & File Organization
+## 1. The Single-File `.loom` Container Format
 
-A LoomDB database directory is organized as follows:
-
-```
-<database_path>/
-├── MANIFEST                    # Database metadata, active SSTables, and log pointers
-├── CURRENT                     # Text pointer referencing current valid MANIFEST-XXXXXX
-├── wal/
-│   ├── 000001.wal              # Active Write-Ahead Log
-│   └── 000002.wal              # Rotated WAL ready for flush
-├── vlog/
-│   ├── 000001.vlog             # Append-only Value Log for large payload separation
-│   └── 000002.vlog
-├── sst/
-│   ├── L0/                     # Level 0 SSTables (freshly flushed from MemTable)
-│   │   ├── 000010.sst
-│   │   └── 000011.sst
-│   ├── L1/                     # Level 1 SSTables (non-overlapping key ranges)
-│   └── L2/                     # Deeper levels with larger capacity
-└── indexes/
-    ├── hnsw/                   # Serialized HNSW vector graphs
-    └── fts/                    # Inverted term dictionary for full-text search
-```
-
----
-
-## 2. On-Disk Binary Formats
-
-### 2.1 Write-Ahead Log (WAL) Format
-Every write transaction generates one or more WAL records. The log consists of a sequence of 32KB blocks, each containing variable-sized chunk records.
+All tables, indexes, vectors, and WAL journals can be encapsulated within a single portable file:
 
 ```
-┌─────────────────┬──────────────────┬─────────────────┬─────────────────┬──────────────────────┐
-│  xxHash3 (8B)   │  Record Len (4B) │ Record Type(1B) │  Timestamp(8B)  │  Payload (variable)  │
-└─────────────────┴──────────────────┴─────────────────┴─────────────────┴──────────────────────┘
++-------------------------------------------------------------------------+
+|                        Header Page (128 Bytes)                          |
++-------------------------------------------------------------------------+
+|                     Allocation Bitmap Pages (4KB each)                  |
++-------------------------------------------------------------------------+
+|                     Virtual Inode Registry Page (4KB)                   |
++-------------------------------------------------------------------------+
+|                     Virtual Data & Index Pages (0..N)                   |
+|  - Circular WAL Ring Pages                                              |
+|  - B+Tree Table Pages                                                   |
+|  - HNSW Vector Graph Pages                                              |
+|  - LoomBSON Document Pages                                              |
+|  - Free / Recycled Pages                                                |
++-------------------------------------------------------------------------+
 ```
 
-* **xxHash3 (8 Bytes):** Little-endian 64-bit checksum of the record header and payload.
-* **Record Len (4 Bytes):** Length of payload in bytes (maximum payload: 16MB per chunk).
-* **Record Type (1 Byte):**
-  * `0x01` = Complete Record (fits entirely in block)
-  * `0x02` = First Chunk (spanning multiple blocks)
-  * `0x03` = Middle Chunk
-  * `0x04` = Last Chunk
-  * `0x05` = Commit Marker
-  * `0x06` = Rollback Marker
-* **Timestamp (8 Bytes):** Nanosecond UNIX epoch timestamp.
-* **Payload:** Binary serialized operations: `[OpCode: 1B, KeyLen: 2B, Key: bytes, ValLen: 4B, Value: bytes]`.
-
----
-
-### 2.2 SSTable (.sst) File Format
-An SSTable stores sorted keys with pointers into the data blocks or the Value Log.
+### 1.1 Header Structure (Fixed 128 Bytes, Offset 0)
 
 ```
-┌────────────────────────────────────────────────────────┐
-│                   Data Block 0                         │
-├────────────────────────────────────────────────────────┤
-│                   Data Block 1                         │
-├────────────────────────────────────────────────────────┤
-│                      ...                               │
-├────────────────────────────────────────────────────────┤
-│                   Data Block N                         │
-├────────────────────────────────────────────────────────┤
-│                   Filter Block (Blocked Bloom Filter)  │
-├────────────────────────────────────────────────────────┤
-│                   Index Block (Two-Level B-Tree)       │
-├────────────────────────────────────────────────────────┤
-│                   Meta Properties Block                │
-├────────────────────────────────────────────────────────┤
-│                   Footer (Fixed 48 Bytes)              │
-└────────────────────────────────────────────────────────┘
-```
-
-#### SSTable Footer (Fixed 48 Bytes):
-```
-┌───────────────────────────────────┬──────────────┐
-│ Field                             │ Size         │
-├───────────────────────────────────┼──────────────┤
-│ Metaindex Handle (Offset + Size)  │ 16 Bytes     │
-│ Index Handle (Offset + Size)      │ 16 Bytes     │
-│ Block Filter Handle (Offset+Size) │ 12 Bytes     │
-│ Magic Number (0x4C4F4F4D44423031) │ 8 Bytes      │
-└───────────────────────────────────┴──────────────┘
-```
-* **Magic Number:** `0x4C4F4F4D44423031` (ASCII: `"LOOMDB01"`).
-
-#### Data Block Layout:
-* Compressed using **Zstandard** (level 3) or **LZ4**.
-* Entries are restart-point prefix-compressed to minimize key redundancy:
-  * `shared_prefix_len (2B)` + `unshared_len (2B)` + `val_len (4B)` + `key_delta` + `value`.
-* Restart points table located at the tail of the block for \(O(\log K)\) binary search inside the block.
-
----
-
-### 2.3 Value Log (vLog) Entry Format
-Values separated out of the LSM tree are appended sequentially to the `vLog`:
-
-```
-┌──────────────┬──────────────┬──────────────┬───────────────┬────────────────────────┐
-│ CRC32C (4B)  │ Key Len (2B) │ Val Len (4B) │ User Key (var)│ Value Payload (var)    │
-└──────────────┴──────────────┴──────────────┴───────────────┴────────────────────────┘
-```
-
-The corresponding LSM entry only needs to hold a compact 16-byte `ValuePtr`:
-```rust
-#[repr(C, packed)]
-pub struct ValuePtr {
-    pub vlog_file_id: u32,
-    pub offset: u64,
-    pub length: u32,
-}
+Offset  Size (B)  Field Name             Description
+0       8         magic                  ASCII: "LOOMDB01" (0x4C4F4F4D44423031)
+8       2         page_size              Page size in bytes (512 .. 65536, default: 4096)
+10      2         format_version         Format version (currently 1)
+12      8         total_pages            Total allocated pages in container
+20      8         free_page_head         Page ID of the first recycled free page
+28      8         catalog_root_page      Root B+Tree page ID for system schema catalog
+36      8         wal_ring_start_page    First page of in-container circular WAL
+44      8         wal_ring_page_count    Number of pages allocated to WAL ring (e.g. 1024 pages = 4MB)
+52      8         wal_head_offset        Current append offset in WAL ring
+60      8         wal_tail_offset        Oldest uncheckpointed offset in WAL ring
+68      8         sequence_number        Latest committed MVCC transaction timestamp
+76      44        reserved               Zeroed for future cryptographic / layout expansion
+120     8         header_checksum        xxHash3-64 checksum of bytes 0..119
 ```
 
 ---
 
-## 3. Vector Engine Specification (HNSW)
+### 1.2 Page Layouts
 
-The Hierarchical Navigable Small World (HNSW) graph index maps multi-dimensional embeddings:
+Every page is aligned to `page_size` (typically 4096 bytes). Each page starts with an 8-byte **Page Header**:
 
-### 3.1 Graph Parameters
-* **Vector Dimensions:** Dynamic (e.g., 384, 768, 1536, 3072).
-* **Element Data Types:**
-  * `Float32` (Standard IEEE 754)
-  * `Float16` (Half precision)
-  * `Int8` (Scalar Quantization with min/max calibration)
-* **Default Hyperparameters:**
-  * `M`: 16 (Number of bidirectional links per node)
-  * `M0`: 32 (Max links at layer 0)
-  * `efConstruction`: 128 (Size of dynamic candidate list during build)
-  * `efSearch`: 64 (Size of candidate list during query)
+```
+Offset  Size (B)  Field Name     Description
+0       1         page_type      0x01: B+Tree Leaf, 0x02: B+Tree Internal,
+                                 0x03: HNSW Node Page, 0x04: Document Page,
+                                 0x05: Free Page
+1       1         flags          Bit 0: Compressed, Bit 1: Overflow
+2       2         cell_count     Number of entries / keys in this page
+4       2         free_offset    Offset to start of unallocated page space
+6       2         page_checksum  CRC16-CCITT of page payload
+```
 
-### 3.2 Distance Functions
-Computed using target-specific SIMD instruction sets:
-1. **Cosine Similarity:**
-   $$\text{Cosine}(A, B) = \frac{A \cdot B}{\|A\|_2 \|B\|_2}$$
-2. **Squared Euclidean ($L_2$) Distance:**
-   $$L_2^2(A, B) = \sum_{i=1}^d (A_i - B_i)^2$$
-3. **Dot Product:**
-   $$\text{Dot}(A, B) = \sum_{i=1}^d A_i B_i$$
+#### B+Tree Leaf Page Cell:
+* `key_len (2B)` + `key_bytes` + `val_len (4B)` + `value_bytes` (or 16-byte `ValuePtr` if separated).
+* Cell pointers are stored sequentially at the top of the page growing downward; actual cell bodies are stored at the bottom growing upward (Slotted Page Architecture).
+
+#### HNSW Vector Graph Page:
+* Stores graph adjacency lists compactly:
+  * `node_id (u64)` + `vector_data ([f32; D] or [i8; D])` + `neighbor_count (u16)` + `neighbor_ids ([u64; M])`.
 
 ---
 
-## 4. Network Wire Protocol (LoomWire)
+## 2. In-Memory Micro Architecture
 
-When running in Standalone Server mode, clients can connect via **gRPC** or the low-overhead **LoomWire** binary TCP protocol.
+### 2.1 The Micro Pager
+When running in **Micro Profile** (e.g., embedded in IoT or Browser Wasm):
+* No persistent background writer thread.
+* In-flight mutations write to the in-container WAL ring.
+* The pager caches only **16 to 64 pages** in memory (~64 KB to 256 KB RAM) using a lightweight Clock/LRU eviction algorithm.
+* Point-lookups on clean pages read directly from the memory map (`mmap`) with zero heap copies.
 
-### 4.1 LoomWire Frame Layout
+---
+
+## 3. Network Wire Protocol (LoomWire)
+
+When running in Standalone Server mode:
 
 ```
  0                   1                   2                   3
@@ -173,13 +105,10 @@ When running in Standalone Server mode, clients can connect via **gRPC** or the 
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ```
 
-### 4.2 Message Types
-* `0x01`: `QUERY_REQUEST` (SQL / LoomQL query string + parameters)
-* `0x02`: `QUERY_RESPONSE` (Arrow record batches or row streaming)
-* `0x03`: `SUBSCRIBE_REQUEST` (Live query subscription)
-* `0x04`: `SUBSCRIPTION_DELTA` (Streaming change notification)
-* `0x05`: `TRANSACTION_BEGIN`
-* `0x06`: `TRANSACTION_COMMIT`
-* `0x07`: `TRANSACTION_ROLLBACK`
-* `0x08`: `HEARTBEAT_PING` / `HEARTBEAT_PONG`
-* `0xFF`: `ERROR_FRAME`
+---
+
+## 4. WebAssembly Execution Model
+
+* Compiles target: `wasm32-unknown-unknown` and `wasm32-wasip1`.
+* JavaScript Bridge: Pure TypeScript wrapper `@loomdb/wasm` (< 15 KB gzipped).
+* Storage: Interacts with the browser's **Origin Private File System (OPFS)** using synchronous buffer reads/writes, allowing sub-millisecond local database queries in client-side web apps.

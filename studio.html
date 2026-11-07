@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoomDB Studio 🧶</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent-glow: rgba(88, 166, 255, 0.15);
+      --success: #238636;
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --header-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--header-font);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #fff;
+    }
+    .badge {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .metrics {
+      display: flex;
+      gap: 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .metric-val {
+      color: #58a6ff;
+      font-weight: 600;
+      font-family: var(--mono);
+    }
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 260px 1fr 340px;
+      overflow: hidden;
+    }
+    .sidebar {
+      background: #11151c;
+      border-right: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nav-item {
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+    .nav-item:hover, .nav-item.active {
+      background: var(--surface);
+      color: #fff;
+    }
+    .editor-pane {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+    }
+    .toolbar {
+      padding: 10px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    button.run-btn {
+      background: var(--success);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.2s;
+    }
+    button.run-btn:hover { opacity: 0.9; }
+    textarea.query-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #e6edf3;
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      resize: none;
+      outline: none;
+      line-height: 1.5;
+    }
+    .results-pane {
+      height: 45%;
+      border-top: 1px solid var(--border);
+      background: #0f131a;
+      display: flex;
+      flex-direction: column;
+    }
+    .results-header {
+      padding: 8px 16px;
+      font-size: 0.8rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      font-family: var(--mono);
+    }
+    .results-table th, .results-table td {
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid #21262d;
+    }
+    .results-table th {
+      background: #161b22;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .inspector-pane {
+      background: #11151c;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .stat-label { font-size: 0.75rem; color: var(--text-muted); }
+    .stat-number { font-size: 1.25rem; font-weight: 700; color: #fff; margin-top: 4px; font-family: var(--mono); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span>🧶 LoomDB Studio</span>
+      <span class="badge">v0.1.0 (Micro)</span>
+    </div>
+    <div class="metrics">
+      <div>RAM: <span class="metric-val">482 KB</span></div>
+      <div>Container: <span class="metric-val">single .loom file</span></div>
+      <div>Status: <span class="metric-val" style="color: #3fb950;">● Active</span></div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Left Navigation -->
+    <aside class="sidebar">
+      <div class="section-title">Collections & Tables</div>
+      <ul class="nav-list">
+        <li class="nav-item active">📄 memories (Vector/JSON)</li>
+        <li class="nav-item">📊 telemetry (Time-Series)</li>
+        <li class="nav-item">👤 users (Relational)</li>
+      </ul>
+
+      <div class="section-title" style="margin-top: 12px;">Indexes & Models</div>
+      <ul class="nav-list">
+        <li class="nav-item">🎯 HNSW (1536-dim)</li>
+        <li class="nav-item">🔍 BM25 Full-Text</li>
+        <li class="nav-item">🌲 B+Tree (Primary)</li>
+      </ul>
+    </aside>
+
+    <!-- Center Editor & Results -->
+    <section class="editor-pane">
+      <div class="toolbar">
+        <button class="run-btn" onclick="runQuery()">▶ Execute Query</button>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Press Ctrl + Enter to run</span>
+      </div>
+      <textarea id="queryInput" class="query-input" spellcheck="false">-- Hybrid Vector + Relational Query
+SELECT id, topic, notes, 
+       cosine_similarity(embedding, [0.12, 0.45, -0.22, 0.81]) AS score
+FROM memories
+WHERE topic LIKE '%Rust%'
+ORDER BY score DESC
+LIMIT 2;</textarea>
+
+      <div class="results-pane">
+        <div class="results-header">
+          <span>Query Results: 2 rows returned</span>
+          <span style="color: #3fb950;">Execution time: 0.42 ms (Fused SIMD)</span>
+        </div>
+        <div style="flex: 1; overflow: auto;">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>topic</th>
+                <th>notes</th>
+                <th>score</th>
+              </tr>
+            </thead>
+            <tbody id="resultBody">
+              <tr>
+                <td>mem_01</td>
+                <td>Rust Database Design</td>
+                <td>LoomDB compiles to single-file .loom container.</td>
+                <td style="color: #58a6ff;">0.9821</td>
+              </tr>
+              <tr>
+                <td>mem_02</td>
+                <td>Zero-Overhead Memory</td>
+                <td>Sub-512KB idle footprint for embedded devices.</td>
+                <td style="color: #58a6ff;">0.8945</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Storage Inspector -->
+    <aside class="inspector-pane">
+      <div class="section-title">Storage & Resource Inspector</div>
+      
+      <div class="stat-card">
+        <div class="stat-label">Single Container Size</div>
+        <div class="stat-number">48.2 KB</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Virtual Pager Free Pages</div>
+        <div class="stat-number">4 / 16 (Recycled)</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">HNSW Vector Nodes</div>
+        <div class="stat-number">1,024 (SQ8 Quantized)</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Live Active Subscriptions</div>
+        <div class="stat-number">0 (Polling: 0%)</div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    function runQuery() {
+      const btn = document.querySelector('.run-btn');
+      btn.innerText = "Running...";
+      setTimeout(() => {
+        btn.innerText = "▶ Execute Query";
+      }, 200);
+    }
+  </script>
+</body>
+</html>
