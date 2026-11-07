@@ -1,5 +1,9 @@
-LoomDB weaves SQL Relational, JSON Documents, AI Vectors, and Time-Series into a single portable .loom container with sub-512KB idle RAM overhead. 
+# LoomDB Social Share Copy
 
-Zero background daemons, zero external dependencies, and instant AVX-512 SIMD vector queries in under 0.4 milliseconds.
+LoomDB is a forkable, deterministic, budget-enforced, zero-copy embedded multi-modal database with a stable single-file ABI and native OPFS multi-tab coordination.
 
-100% free and open-source forever: https://github.com/loomdb/loomdb
+Built in pure safe Rust with sub-512KB idle RAM overhead.
+Eliminate database sprawl: ANSI SQL, JSON documents, AVX-512 vector search, and time-series streams inside a single portable `.loom` container.
+
+Check it out on GitHub:
+https://github.com/armoredglock/LoomDB
