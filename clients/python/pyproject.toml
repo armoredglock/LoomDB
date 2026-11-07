@@ -22,4 +22,4 @@ keywords = ["database", "vector", "ai", "sql", "timeseries", "loomdb"]
 
 [project.urls]
 "Homepage" = "https://loomdb.dev"
-"Repository" = "https://github.com/loomdb/loomdb"
+"Repository" = "https://github.com/armoredglock/LoomDB"

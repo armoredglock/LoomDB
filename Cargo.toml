@@ -14,8 +14,8 @@ version = "0.1.0"
 authors = ["LoomDB Authors"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
-homepage = "https://github.com/loomdb/loomdb"
-repository = "https://github.com/loomdb/loomdb"
+homepage = "https://github.com/armoredglock/LoomDB"
+repository = "https://github.com/armoredglock/LoomDB"
 
 [profile.release]
 opt-level = 3

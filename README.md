@@ -3,7 +3,7 @@
 > **The World's Lightest Multi-Modal Database.**  
 > *Sub-850KB stripped binary. Sub-512KB idle RAM footprint. Single-file `.loom` container. Runs everywhere: from WebAssembly in the browser and IoT micro-controllers to multi-core servers.*
 
-[![CI](https://github.com/loomdb/loomdb/actions/workflows/ci.yml/badge.svg)](https://github.com/loomdb/loomdb/actions/workflows/ci.yml)
+[![CI](https://github.com/armoredglock/LoomDB/actions/workflows/ci.yml/badge.svg)](https://github.com/armoredglock/LoomDB/actions/workflows/ci.yml)
 [![License: MIT / Apache-2.0](https://img.shields.io/badge/license-MIT%20%2F%20Apache--2.0-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux%20%7C%20wasm-lightgrey.svg)](#)
 [![Footprint](https://img.shields.io/badge/idle%20RAM-%3C%20512%20KB-orange.svg)](#)
@@ -245,7 +245,7 @@ Prerequisites: Rust 1.75+ (or MinGW toolchain on Windows).
 
 ```bash
 # Clone the repository
-git clone https://github.com/loomdb/loomdb.git
+git clone https://github.com/armoredglock/LoomDB.git
 cd LoomDB
 
 # Run tests across all workspace crates
