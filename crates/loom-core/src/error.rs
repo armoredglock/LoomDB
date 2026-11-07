@@ -28,6 +28,16 @@ pub enum LoomError {
 
     #[error("Internal engine error: {0}")]
     Internal(String),
+
+    #[error("Hard resource budget exceeded: {metric} used {used}B exceeds cap {cap}B")]
+    BudgetExceeded {
+        metric: String,
+        used: u64,
+        cap: u64,
+    },
+
+    #[error("Branch '{0}' not found")]
+    BranchNotFound(String),
 }
 
 pub type LoomResult<T> = Result<T, LoomError>;

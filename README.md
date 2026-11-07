@@ -1,13 +1,76 @@
 # LoomDB
 
-> **The World's Lightest Multi-Modal Database.**  
-> *Sub-850KB stripped binary. Sub-512KB idle RAM footprint. Single-file `.loom` container. Runs everywhere: from WebAssembly in the browser and IoT micro-controllers to multi-core servers.*
+> **LoomDB is a forkable, deterministic, budget-enforced, zero-copy embedded multi-modal database with a stable single-file ABI and native OPFS multi-tab coordination.**  
+> *Sub-850KB stripped binary. Sub-512KB idle RAM footprint. Single-file `.loom` container. Runs everywhere: from WebAssembly in browser tabs with multi-tab coordination to edge micro-controllers and multi-core servers.*
 
 [![CI](https://github.com/armoredglock/LoomDB/actions/workflows/ci.yml/badge.svg)](https://github.com/armoredglock/LoomDB/actions/workflows/ci.yml)
 [![License: MIT / Apache-2.0](https://img.shields.io/badge/license-MIT%20%2F%20Apache--2.0-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux%20%7C%20wasm-lightgrey.svg)](#)
 [![Footprint](https://img.shields.io/badge/idle%20RAM-%3C%20512%20KB-orange.svg)](#)
 [![Binary Size](https://img.shields.io/badge/binary%20weight-%3C%20850%20KB-orange.svg)](#)
+
+---
+
+## Core Novelty: The 6 Storage Primitives
+
+Embedded databases typically provide flat key-value pairs or SQL tables without branching, budget guarantees, or browser multi-tab safety. LoomDB introduces 6 novel storage primitives as first-class engine operations:
+
+```text
+                                  +---------------------------------------+
+                                  |     LoomDB Unified Storage Pager      |
+                                  +---------------------------------------+
+                                                      |
+         +--------------------+-----------------------+-----------------------+--------------------+
+         |                    |                       |                       |                    |
+         v                    v                       v                       v                    v
+  [1. Forkable COW]   [2. Flight Recorder]   [3. Budget Governor]   [4. Zero-Copy ABI]   [5. OPFS Coord]
+  Page-level branch   Deterministic replay    Hard caps enforced    Lock-free mmap view  Web Locks multi-tab
+  fork(), checkout()  bit-for-bit from WAL    via backpressure/err  typed reader slices  leader/reader queue
+```
+
+1. **Forkable Copy-on-Write Snapshots as a Storage Primitive:**
+   - Exposes `fork()`, `checkout()`, `discard()`, and `merge()` at page level inside the single `.loom` container.
+   - Snapshots are instantaneous and O(1) in disk consumption: branched page tables share base pointers and only allocate on write (COW).
+   - *Novelty:* Embedded databases rarely expose cheap branching as a first-class storage operation.
+
+2. **Deterministic Flight Recorder + Replay:**
+   - Always-on lightweight WAL records non-deterministic inputs: execution timestamps, random seeds, and external parameters alongside mutations.
+   - Enables replaying any query or transaction sequence bit-for-bit with checksum-verified state reproducibility.
+   - *Novelty:* Complete reproducible state for debugging edge failures, AI agent simulations, and distributed verification.
+
+3. **Hard Resource-Budget Governor:**
+   - User declares exact resource caps: `max_ram_bytes`, `max_wal_bytes`, `max_page_cache`, `max_io_per_query`.
+   - Engine enforces them strictly via backpressure and hard errors (`LoomError::BudgetExceeded`), never best-effort degradation.
+   - Exposes live budget utilization via the queryable system table: `SELECT * FROM _sys_budget;`
+   - *Novelty:* Turns "tiny database" into a verifiable, enforceable contract for constrained edge devices.
+
+4. **Zero-Copy Mmap Read Path + Stable `.loom` File ABI:**
+   - Documented byte layout and versioning rules with lock-free readers + single-writer protocol (generation seqlock).
+   - Readers return typed zero-copy views over memory-mapped pages without copying rows into heap memory.
+   - *Novelty:* Multi-process zero-copy access with a stable binary ABI in an embedded multi-modal engine.
+
+5. **OPFS Multi-Tab Coordination:**
+   - Browser-native single-writer / multi-reader coordination over Origin Private File System (OPFS).
+   - Uses Web Locks API for cooperative write leases, BroadcastChannel for change-data capture, and heartbeat crash recovery.
+   - *Novelty:* Eliminates multi-tab corruption in Wasm-based web apps without requiring a server backend.
+
+6. **Self-Queryable System Telemetry:**
+   - Engine metrics (latency percentiles p50/p99, cache hit rates, WAL volume, page faults, query counts) are stored in a native system time-series table.
+   - Queryable with standard SQL: `SELECT * FROM _sys_telemetry;`
+   - *Novelty:* Built-in observability as a native data modality directly inside the engine.
+
+---
+
+## Credibility Multipliers
+
+In addition to the 6 core storage primitives, LoomDB incorporates 3 architectural credibility pillars:
+
+7. **Composable Index Framework ("Meta-Index"):**
+   - Exposes B+Tree range, HNSW vector distance, time-range, and hash primitives that compose into hybrid indices with a unified query plan in `crates/loom-index`.
+8. **Public File-Format Spec & Crash-Injection Tests:**
+   - Fully published binary container specification with simulated power-cut and torn-write recovery tests in `crates/loom-core/tests/`.
+9. **Portable Footprint Benchmark Suite:**
+   - Verifiable test harness measuring binary size (<850 KB), idle RAM (<512 KB), peak RAM, and sub-1ms cold-start latency.
 
 ---
 

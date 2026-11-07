@@ -252,6 +252,23 @@ fn run_repl(container: &str) {
                     print!("\x1B[2J\x1B[1;1H");
                     io::stdout().flush().unwrap();
                 }
+                ".branches" => {
+                    execute_repl_sql("SHOW BRANCHES", &mut catalog, container, &output_mode);
+                }
+                ".budget" => {
+                    execute_repl_sql("SELECT * FROM _sys_budget", &mut catalog, container, &output_mode);
+                }
+                ".telemetry" => {
+                    execute_repl_sql("SELECT * FROM _sys_telemetry", &mut catalog, container, &output_mode);
+                }
+                cmd if cmd.starts_with(".fork ") => {
+                    let branch = &cmd[6..];
+                    execute_repl_sql(&format!("FORK BRANCH {}", branch), &mut catalog, container, &output_mode);
+                }
+                cmd if cmd.starts_with(".checkout ") => {
+                    let branch = &cmd[10..];
+                    execute_repl_sql(&format!("CHECKOUT {}", branch), &mut catalog, container, &output_mode);
+                }
                 ".stats" => {
                     show_stats(container);
                 }
@@ -304,6 +321,54 @@ fn execute_repl_sql(query: &str, catalog: &mut DatabaseCatalog, container: &str,
         } else {
             println!("Syntax error: DROP TABLE <table_name>");
         }
+        return;
+    }
+
+    // 2.5 FORK & COW BRANCHING
+    if lower.starts_with("fork branch ") || lower.starts_with("fork ") {
+        let name = if lower.starts_with("fork branch ") { &trimmed[12..] } else { &trimmed[5..] }.trim();
+        match catalog.branches.fork(name) {
+            Ok(_) => {
+                let _ = catalog.save_to_file(container);
+                println!("Snapshot OK: Created forkable branch '{}' (Copy-on-Write generation). ({:.2?})", name, start.elapsed());
+            }
+            Err(e) => println!("Error: {}", e),
+        }
+        return;
+    }
+
+    if lower.starts_with("checkout ") {
+        let name = trimmed[9..].trim();
+        match catalog.branches.checkout(name) {
+            Ok(_) => {
+                let _ = catalog.save_to_file(container);
+                println!("Switched to branch '{}'. ({:.2?})", name, start.elapsed());
+            }
+            Err(e) => println!("Error: {}", e),
+        }
+        return;
+    }
+
+    if lower.starts_with("discard branch ") || lower.starts_with("discard ") {
+        let name = if lower.starts_with("discard branch ") { &trimmed[15..] } else { &trimmed[8..] }.trim();
+        match catalog.branches.discard(name) {
+            Ok(_) => {
+                let _ = catalog.save_to_file(container);
+                println!("Branch '{}' discarded. ({:.2?})", name, start.elapsed());
+            }
+            Err(e) => println!("Error: {}", e),
+        }
+        return;
+    }
+
+    if lower == "show branches" {
+        println!("+----------------------+---------+-------------+-------------+");
+        println!("| Branch               | Active  | Tables/COW  | Parent      |");
+        println!("+----------------------+---------+-------------+-------------+");
+        for b in catalog.branches.list() {
+            println!("| {:<20} | {:<7} | {:<11} | {:<11} |", b.name, if b.is_active { "*" } else { " " }, b.table_count, b.parent.unwrap_or_else(|| "none".into()));
+        }
+        println!("+----------------------+---------+-------------+-------------+");
         return;
     }
 
@@ -365,6 +430,34 @@ fn execute_repl_sql(query: &str, catalog: &mut DatabaseCatalog, container: &str,
         let after_from = &trimmed[from_idx.unwrap() + 6..].trim();
         let table_token = after_from.split_whitespace().next().unwrap_or("").trim_matches(';');
         
+        // Check system tables first
+        if let Some((sys_cols, sys_rows)) = catalog.get_system_table(table_token) {
+            let synthetic_table = loom_core::catalog::TableDef {
+                name: table_token.to_string(),
+                columns: sys_cols,
+                ddl: String::new(),
+                rows: sys_rows,
+            };
+            match mode {
+                OutputMode::Table => render_ascii_table(&synthetic_table, trimmed, start.elapsed()),
+                OutputMode::Json => {
+                    println!("{}", serde_json::to_string_pretty(&synthetic_table.rows).unwrap_or_default());
+                    println!("{} rows in set. ({:.2?})", synthetic_table.rows.len(), start.elapsed());
+                }
+                OutputMode::Csv => {
+                    let col_names: Vec<String> = synthetic_table.columns.iter().map(|c| c.name.clone()).collect();
+                    println!("{}", col_names.join(","));
+                    for r in &synthetic_table.rows {
+                        let vals: Vec<String> = col_names.iter().map(|c| r.get(c).map(|v| v.to_string()).unwrap_or_default()).collect();
+                        println!("{}", vals.join(","));
+                    }
+                    println!("# {} rows in set. ({:.2?})", synthetic_table.rows.len(), start.elapsed());
+                }
+            }
+            catalog.telemetry.record_query(start.elapsed().as_micros() as u32);
+            return;
+        }
+
         let table = match catalog.get_table(table_token) {
             Some(t) => t,
             None => {
@@ -639,6 +732,73 @@ pub fn execute_sql_to_json(query: &str, catalog: &mut DatabaseCatalog, container
         }
     }
 
+    // FORK & COW BRANCHING
+    if lower.starts_with("fork branch ") || lower.starts_with("fork ") {
+        let name = if lower.starts_with("fork branch ") { &trimmed[12..] } else { &trimmed[5..] }.trim();
+        return match catalog.branches.fork(name) {
+            Ok(_) => {
+                let _ = catalog.save_to_file(container);
+                serde_json::json!({
+                    "status": "ok",
+                    "branch": name,
+                    "message": format!("Forkable branch '{}' created with Copy-on-Write snapshots", name),
+                    "elapsed_us": start.elapsed().as_micros()
+                })
+            }
+            Err(e) => serde_json::json!({"status": "error", "message": e}),
+        };
+    }
+
+    if lower.starts_with("checkout ") {
+        let name = trimmed[9..].trim();
+        return match catalog.branches.checkout(name) {
+            Ok(_) => {
+                let _ = catalog.save_to_file(container);
+                serde_json::json!({
+                    "status": "ok",
+                    "active_branch": name,
+                    "message": format!("Switched to branch '{}'", name),
+                    "elapsed_us": start.elapsed().as_micros()
+                })
+            }
+            Err(e) => serde_json::json!({"status": "error", "message": e}),
+        };
+    }
+
+    if lower.starts_with("discard branch ") || lower.starts_with("discard ") {
+        let name = if lower.starts_with("discard branch ") { &trimmed[15..] } else { &trimmed[8..] }.trim();
+        return match catalog.branches.discard(name) {
+            Ok(_) => {
+                let _ = catalog.save_to_file(container);
+                serde_json::json!({
+                    "status": "ok",
+                    "discarded_branch": name,
+                    "message": format!("Branch '{}' discarded", name),
+                    "elapsed_us": start.elapsed().as_micros()
+                })
+            }
+            Err(e) => serde_json::json!({"status": "error", "message": e}),
+        };
+    }
+
+    if lower == "show branches" {
+        let list: Vec<_> = catalog.branches.list().into_iter().map(|b| {
+            serde_json::json!({
+                "name": b.name,
+                "parent": b.parent,
+                "is_active": b.is_active,
+                "table_count": b.table_count,
+                "created_at_us": b.created_at_us
+            })
+        }).collect();
+        return serde_json::json!({
+            "status": "ok",
+            "active_branch": catalog.branches.active_branch,
+            "branches": list,
+            "elapsed_us": start.elapsed().as_micros()
+        });
+    }
+
     if lower.starts_with("select") {
         let from_idx = match lower.find(" from ") {
             Some(i) => i,
@@ -652,6 +812,18 @@ pub fn execute_sql_to_json(query: &str, catalog: &mut DatabaseCatalog, container
 
         let after_from = &trimmed[from_idx + 6..].trim();
         let table_token = after_from.split_whitespace().next().unwrap_or("").trim_matches(';');
+
+        if let Some((sys_cols, sys_rows)) = catalog.get_system_table(table_token) {
+            let cols: Vec<String> = sys_cols.iter().map(|c| c.name.clone()).collect();
+            catalog.telemetry.record_query(start.elapsed().as_micros() as u32);
+            return serde_json::json!({
+                "status": "ok",
+                "columns": cols,
+                "rows": sys_rows,
+                "count": sys_rows.len(),
+                "elapsed_us": start.elapsed().as_micros()
+            });
+        }
 
         let table = match catalog.get_table(table_token) {
             Some(t) => t,

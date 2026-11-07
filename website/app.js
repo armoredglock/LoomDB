@@ -337,6 +337,25 @@ LIMIT 2;`,
 +--------+------------------------------+--------------------------+--------+
 2 rows in set. Execution time: 0.38 ms (SIMD fused)`
   },
+  fork: {
+    query: `FORK BRANCH 'experiment_a';
+CHECKOUT 'experiment_a';`,
+    output: `Snapshot OK: Created forkable branch 'experiment_a' (Copy-on-Write generation).
+Switched to branch 'experiment_a'. Execution time: 0.32 ms
+Page directory COW mapping: 100% shared base, zero duplicated bytes.`
+  },
+  budget: {
+    query: `SELECT * FROM _sys_budget;`,
+    output: `+----------------------+-------+---------+-----------------+--------+
+| metric               | used  | cap     | utilization_pct | status |
++----------------------+-------+---------+-----------------+--------+
+| max_ram_bytes        | 43008 | 524288  | 8.2%            | NORMAL |
+| max_wal_bytes        | 0     | 4194304 | 0.0%            | NORMAL |
+| max_page_cache_bytes | 65536 | 262144  | 25.0%           | NORMAL |
+| max_io_per_query     | 0     | 1000    | 0.0%            | NORMAL |
++----------------------+-------+---------+-----------------+--------+
+4 rows in set. Hard resource budget strictly enforced.`
+  },
   document: {
     query: `SELECT id, profile->'author'->>'name' AS author, profile->'tags' AS tags
 FROM articles
@@ -349,26 +368,6 @@ LIMIT 2;`,
 | art_04 | Alex Thorne        | ["ai", "vector", "rust"]    |
 +--------+--------------------+-----------------------------+
 2 rows in set. Execution time: 0.42 ms`
-  },
-  timetravel: {
-    query: `SELECT balance FROM user_accounts 
-AS OF TIMESTAMP '2026-11-01T00:00:00Z'
-WHERE account_id = 'acc_4921';`,
-    output: `+-------------------+--------------+
-| account_id        | balance      |
-+-------------------+--------------+
-| acc_4921          | $14,250.00   |
-+-------------------+--------------+
-Snapshot: v18492 (Zero-copy CoW MVCC branch). Execution time: 0.29 ms`
-  },
-  live: {
-    query: `LIVE SELECT order_id, customer, total_usd 
-FROM orders 
-WHERE status = 'pending';`,
-    output: `[STREAM_OPEN] Continuous Subscription Active (Stream ID: 0x4f1a)
-[WAL CDC +0.02s] INSERT -> {"order_id": "ord_881", "customer": "Dana", "total_usd": 128.50}
-[WAL CDC +1.14s] UPDATE -> {"order_id": "ord_881", "status": "processing"}
-Watching WAL commits with zero polling overhead.`
   }
 };
 

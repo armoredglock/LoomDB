@@ -46,14 +46,12 @@
           <div class="eyebrow">Engine Spec: Micro Profile &middot; Sub-850 KB Stripped &middot; Zero Thread Idle</div>
 
           <h1 class="hero-title">
-            The lightweight database for <em>five paradigms</em> in one container.
+            The forkable, budget-enforced database for <em>five paradigms</em> in one file.
           </h1>
 
           <p class="hero-desc">
-            LoomDB eliminates polyglot database sprawl. It weaves 
-            <strong>SQL Relational</strong>, <strong>JSON Documents</strong>, <strong>HNSW AI Vectors</strong>, 
-            and <strong>Time-Series Streams</strong> into a single portable <code>.loom</code> file. 
-            Zero background threads when idle. Under 512 KB RAM. 100% free and open-source forever.
+            <strong>LoomDB is a forkable, deterministic, budget-enforced, zero-copy embedded multi-modal database with a stable single-file ABI and native OPFS multi-tab coordination.</strong> 
+            Weaving SQL Relational, JSON Documents, HNSW AI Vectors, and Time-Series Streams into a single portable <code>.loom</code> file with sub-512 KB idle RAM.
           </p>
 
           <div class="hero-cta-group">
@@ -169,10 +167,10 @@
 
         <div class="terminal-presets">
           <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); padding: 6px 0;">Presets:</span>
-          <button class="preset-chip active" data-preset="vector">Fused Vector Search (HNSW)</button>
-          <button class="preset-chip" data-preset="document">JSON Document Projection</button>
-          <button class="preset-chip" data-preset="timetravel">Git Time-Travel (AS OF)</button>
-          <button class="preset-chip" data-preset="live">Live Reactive Query (.subscribe)</button>
+          <button class="preset-chip active" data-preset="vector">HNSW Vector Search</button>
+          <button class="preset-chip" data-preset="fork">COW Fork &amp; Branch</button>
+          <button class="preset-chip" data-preset="budget">Hard Budget Governor</button>
+          <button class="preset-chip" data-preset="document">JSON Document Store</button>
         </div>
 
         <div id="terminalBody" class="terminal-body">
@@ -268,68 +266,68 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
       <div class="feature-cards-grid">
         <div class="craft-card spotlight-card reveal-on-scroll">
           <div>
-            <span class="card-num">01 // HEADER &amp; INODE</span>
-            <h3 class="card-title">128-Byte Fixed Pager Inode</h3>
+            <span class="card-num">01 // PRIMITIVE</span>
+            <h3 class="card-title">Forkable COW Snapshots</h3>
             <p class="card-desc">
-              Directly memory-mapped via <code>mmap</code>. Houses magic bytes, page size configuration, root catalog pointers, and ring-buffer WAL markers with xxHash3 integrity checks.
+              Page-level <code>fork()</code>, <code>checkout()</code>, and <code>discard()</code> inside the single <code>.loom</code> file. Zero-copy instantaneous branches allocate only upon write.
             </p>
           </div>
-          <div class="card-code">Offset 0x00 .. 0x80 | Magic: 'LOOMDB01'</div>
+          <div class="card-code">FORK BRANCH 'experiment_a' | O(1) Allocation</div>
         </div>
 
         <div class="craft-card spotlight-card reveal-on-scroll delay-1">
           <div>
-            <span class="card-num">02 // EMBEDDINGS</span>
-            <h3 class="card-title">In-Page HNSW Vector Graph</h3>
+            <span class="card-num">02 // PRIMITIVE</span>
+            <h3 class="card-title">Deterministic Flight Recorder</h3>
             <p class="card-desc">
-              Stores high-dimensional vectors with 8-bit Scalar Quantization (SQ8). Traversed with AVX-512/NEON SIMD alongside relational filters in a single atomic pass.
+              Lightweight WAL records execution entropy: timestamps, random seeds, and inputs. Replay any mutation sequence bit-for-bit to debug edge failures.
             </p>
           </div>
-          <div class="card-code">75% Memory Reduction via SQ8 Quantization</div>
+          <div class="card-code">Bit-for-Bit Deterministic State Verification</div>
         </div>
 
         <div class="craft-card spotlight-card reveal-on-scroll delay-2">
           <div>
-            <span class="card-num">03 // IN-CONTAINER WAL</span>
-            <h3 class="card-title">Circular WAL Ring Buffer</h3>
+            <span class="card-num">03 // PRIMITIVE</span>
+            <h3 class="card-title">Hard Resource-Budget Governor</h3>
             <p class="card-desc">
-              Append-only circular write buffer allocated directly inside the <code>.loom</code> file. Zero external log files to manage or accidentally lose during crash recovery.
+              Declare strict caps: <code>max_ram</code>, <code>max_wal</code>, <code>max_io_per_query</code>. Enforced via backpressure and hard errors, never best-effort degradation.
             </p>
           </div>
-          <div class="card-code">Group-Commit | CRC32C / xxHash3 Checksums</div>
+          <div class="card-code">SELECT * FROM _sys_budget | Enforceable Contract</div>
         </div>
 
         <div class="craft-card spotlight-card reveal-on-scroll">
           <div>
-            <span class="card-num">04 // SCHEMALESS NOVELTY</span>
-            <h3 class="card-title">LoomBSON Document Store</h3>
+            <span class="card-num">04 // PRIMITIVE</span>
+            <h3 class="card-title">Zero-Copy Mmap + Stable ABI</h3>
             <p class="card-desc">
-              Dictionary-encoded binary JSON. Project nested fields directly from disk blocks without deserializing entire parent document trees.
+              Lock-free readers + single-writer protocol. Returns typed byte views over memory-mapped pages without copying rows into heap memory.
             </p>
           </div>
-          <div class="card-code">Query: profile-&gt;'user'-&gt;&gt;'email'</div>
+          <div class="card-code">Offset 0x00 .. 0x80 | Generation Seqlock ABI</div>
         </div>
 
         <div class="craft-card spotlight-card reveal-on-scroll delay-1">
           <div>
-            <span class="card-num">05 // BITEMPORAL MVCC</span>
-            <h3 class="card-title">Git-for-Data Branching</h3>
+            <span class="card-num">05 // PRIMITIVE</span>
+            <h3 class="card-title">OPFS Multi-Tab Coordination</h3>
             <p class="card-desc">
-              Zero-copy snapshot branching and instantaneous historical queries. Read historical database snapshots with <code>AS OF TIMESTAMP</code> with zero performance penalty.
+              Browser-native single-writer / multi-reader coordination over Origin Private File System via Web Locks, transaction queues, and crash recovery.
             </p>
           </div>
-          <div class="card-code">SELECT * FROM orders AS OF '2026-10-31'</div>
+          <div class="card-code">Web Locks API + BroadcastChannel Live CDC</div>
         </div>
 
         <div class="craft-card spotlight-card reveal-on-scroll delay-2">
           <div>
-            <span class="card-num">06 // EDGE &amp; BROWSER</span>
-            <h3 class="card-title">WebAssembly Native</h3>
+            <span class="card-num">06 // PRIMITIVE</span>
+            <h3 class="card-title">Self-Queryable Telemetry</h3>
             <p class="card-desc">
-              Compiles cleanly to <code>wasm32-unknown-unknown</code> with browser Origin Private File System (OPFS) backing. Run production-grade local databases inside any browser tab.
+              Latency percentiles, cache hit ratios, page faults, and WAL bytes stored in a native time-series table. Queryable using standard SQL.
             </p>
           </div>
-          <div class="card-code">OPFS Synchronous Access Handles</div>
+          <div class="card-code">SELECT * FROM _sys_telemetry | Built-in Metrics</div>
         </div>
       </div>
     </div>
