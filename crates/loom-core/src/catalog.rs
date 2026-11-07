@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::{self, File};
-use std::io::{Read, Write};
+use std::io::{Read, Seek, SeekFrom, Write};
 use std::path::Path;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -202,9 +202,72 @@ impl DatabaseCatalog {
     }
 
     pub fn save_to_file<P: AsRef<Path>>(&self, path: P) -> std::io::Result<()> {
-        let json = serde_json::to_vec_pretty(self)?;
-        let mut file = File::create(path)?;
+        let p = path.as_ref();
+        if let Some(parent) = p.parent() {
+            if !parent.as_os_str().is_empty() {
+                fs::create_dir_all(parent)?;
+            }
+        }
+        let json = serde_json::to_vec(self)?;
+        let mut file = File::create(p)?;
+
+        // Write 128-byte Container Header (Offset 0x00 .. 0x80)
+        let magic = b"LOOMDB\x01\x00";
+        let version_seq = (self.flight_recorder.sequence * 2 + 2) as u64; // Even = stable seqlock
+        let page_size = 4096u32;
+        let cat_pages = ((json.len() + 32 + 4095) / 4096) as u32;
+        let total_pages = 1 + cat_pages;
+        let active_root_page = 0u32;
+        let catalog_page = 1u32;
+        let branch_dir_page = 0u32;
+        let wal_seq = self.flight_recorder.sequence;
+        let flags = 0u32;
+
+        let mut hasher = crc32fast::Hasher::new();
+        hasher.update(magic);
+        hasher.update(&version_seq.to_le_bytes());
+        hasher.update(&page_size.to_le_bytes());
+        hasher.update(&total_pages.to_le_bytes());
+        hasher.update(&active_root_page.to_le_bytes());
+        hasher.update(&catalog_page.to_le_bytes());
+        hasher.update(&branch_dir_page.to_le_bytes());
+        hasher.update(&wal_seq.to_le_bytes());
+        hasher.update(&flags.to_le_bytes());
+        let checksum = hasher.finalize();
+
+        let mut header = [0u8; 128];
+        header[0..8].copy_from_slice(magic);
+        header[8..16].copy_from_slice(&version_seq.to_le_bytes());
+        header[16..20].copy_from_slice(&page_size.to_le_bytes());
+        header[20..24].copy_from_slice(&total_pages.to_le_bytes());
+        header[24..28].copy_from_slice(&active_root_page.to_le_bytes());
+        header[28..32].copy_from_slice(&catalog_page.to_le_bytes());
+        header[32..36].copy_from_slice(&branch_dir_page.to_le_bytes());
+        header[36..44].copy_from_slice(&wal_seq.to_le_bytes());
+        header[44..48].copy_from_slice(&flags.to_le_bytes());
+        header[48..52].copy_from_slice(&checksum.to_le_bytes());
+
+        // Write Header page (Page 0: 4096 bytes)
+        file.write_all(&header)?;
+        let pad0 = vec![0u8; 4096 - 128];
+        file.write_all(&pad0)?;
+
+        // Write Catalog page (Page 1: 32-byte PageHeader + serialized catalog data)
+        let mut page1_hdr = [0u8; 32];
+        page1_hdr[0..4].copy_from_slice(&1u32.to_le_bytes()); // page_id = 1
+        page1_hdr[4] = 2; // PageType::Catalog = 2
+        page1_hdr[6..8].copy_from_slice(&(self.tables.len() as u16).to_le_bytes());
+        file.write_all(&page1_hdr)?;
         file.write_all(&json)?;
+
+        // Pad to end of page boundary
+        let remainder = (32 + json.len()) % 4096;
+        if remainder > 0 {
+            let pad = vec![0u8; 4096 - remainder];
+            file.write_all(&pad)?;
+        }
+
+        file.sync_all()?;
         Ok(())
     }
 
@@ -213,12 +276,31 @@ impl DatabaseCatalog {
         if !p.exists() {
             let cat = Self::new();
             if let Some(parent) = p.parent() {
-                fs::create_dir_all(parent)?;
+                if !parent.as_os_str().is_empty() {
+                    fs::create_dir_all(parent)?;
+                }
             }
             cat.save_to_file(p)?;
             return Ok(cat);
         }
         let mut file = File::open(p)?;
+        let mut magic = [0u8; 8];
+        if file.read_exact(&mut magic).is_ok() && &magic == b"LOOMDB\x01\x00" {
+            // Read from Page 1 (offset 4096)
+            file.seek(SeekFrom::Start(4096 + 32))?;
+            let mut data = Vec::new();
+            file.read_to_end(&mut data)?;
+            // Trim trailing null padding
+            while let Some(&0) = data.last() {
+                data.pop();
+            }
+            if let Ok(cat) = serde_json::from_slice(&data) {
+                return Ok(cat);
+            }
+        }
+
+        // Fallback for plain json or legacy files
+        file.seek(SeekFrom::Start(0))?;
         let mut data = Vec::new();
         file.read_to_end(&mut data)?;
         let cat: Self = serde_json::from_slice(&data)

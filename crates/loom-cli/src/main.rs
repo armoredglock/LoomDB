@@ -3,7 +3,6 @@ use loom_core::catalog::{ColumnDef, DataType, DatabaseCatalog};
 use loom_index::vector::cosine_similarity;
 use std::collections::HashMap;
 use std::io::{self, Write};
-use std::path::PathBuf;
 
 #[derive(Parser)]
 #[command(name = "loom")]
@@ -1100,22 +1099,26 @@ fn handle_service(action: ServiceAction, container: &str) {
 }
 
 fn show_stats(container: &str) {
-    let p = PathBuf::from(container);
-    let size = if p.exists() {
-        p.metadata().map(|m| m.len()).unwrap_or(0)
-    } else {
-        40960
-    };
-    println!("+--------------------------------------------------------+");
-    println!("|             LoomDB Single-File Inspector               |");
-    println!("+-----------------------------+--------------------------+");
-    println!("| Container File              | {:<24} |", container);
-    println!("| File Size                   | {:<24} |", format!("{} bytes", size));
-    println!("| Page Size                   | 4,096 bytes              |");
-    println!("| Allocated Virtual Pages     | 10 pages                 |");
-    println!("| Free / Recycled Pages       | 2 pages                  |");
-    println!("| Active In-Container WAL     | Ring buffer (1 MB)       |");
-    println!("| Current Memory Footprint    | 482 KB                   |");
-    println!("| Architecture Mode           | Micro Profile (<512KB)   |");
-    println!("+-----------------------------+--------------------------+");
+    match loom_storage::LoomContainer::open_or_create(container) {
+        Ok(c) => {
+            let stats = c.stats();
+            println!("+--------------------------------------------------------+");
+            println!("|             LoomDB Single-File Inspector               |");
+            println!("+-----------------------------+--------------------------+");
+            println!("| Container File              | {:<24} |", stats.container_path);
+            println!("| File Size on Disk           | {:<24} |", format!("{} bytes", stats.file_size_bytes));
+            println!("| Page Size                   | {:<24} |", format!("{} bytes", stats.page_size));
+            println!("| Total Virtual Pages         | {:<24} |", format!("{} pages", stats.total_pages));
+            println!("| Generation Seqlock ABI      | {:<24} |", format!("seq #{} (stable)", stats.seqlock_version));
+            println!("| Active COW Branches         | {:<24} |", format!("{} active", stats.active_branches));
+            println!("| Tables / Collections        | {:<24} |", format!("{} tables", stats.table_count));
+            println!("| Flight Recorder WAL Seq     | {:<24} |", format!("tx #{}", stats.wal_seq));
+            println!("| RAM Budget Utilization      | {:<24} |", format!("{} KB / {} KB ({:.1}%)", stats.current_ram_bytes / 1024, stats.max_ram_bytes / 1024, stats.ram_utilization_pct));
+            println!("| Architecture Mode           | Micro Profile (<512KB)   |");
+            println!("+-----------------------------+--------------------------+");
+        }
+        Err(e) => {
+            println!("Error opening container '{}': {}", container, e);
+        }
+    }
 }

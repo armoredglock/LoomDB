@@ -8,11 +8,20 @@ pub enum LoomError {
     #[error("Corrupted record detected: checksum mismatch in {0}")]
     ChecksumMismatch(String),
 
+    #[error("Corrupted container header: {0}")]
+    CorruptedHeader(String),
+
+    #[error("Page not found: {0}")]
+    PageNotFound(u32),
+
     #[error("Key not found")]
     KeyNotFound,
 
     #[error("Transaction conflict: concurrent write detected")]
     TransactionConflict,
+
+    #[error("Seqlock read conflict: concurrent writer mutation")]
+    SeqlockConflict,
 
     #[error("Transaction is already committed or aborted")]
     TransactionClosed,
