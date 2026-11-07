@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
@@ -41,7 +42,7 @@ namespace LoomDB.Installer
         public SetupWizardForm()
         {
             this.Text = "LoomDB Setup Wizard (x64)";
-            this.Size = new Size(580, 420);
+            this.ClientSize = new Size(620, 420);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -58,90 +59,95 @@ namespace LoomDB.Installer
 
         private void InitializeComponents()
         {
-            // Left Blue Banner (Exactly like classic Windows Setup Wizard in Image 4)
+            int footerHeight = 55;
+            int bannerWidth = 185;
+            int bodyHeight = this.ClientSize.Height - footerHeight;
+            int contentWidth = this.ClientSize.Width - bannerWidth;
+
+            // 1. Left Blue Banner (Classic Windows Setup Wizard Left Bar)
             leftBanner = new Panel();
-            leftBanner.Dock = DockStyle.Left;
-            leftBanner.Width = 170;
-            leftBanner.BackColor = Color.FromArgb(16, 44, 110);
+            leftBanner.Location = new Point(0, 0);
+            leftBanner.Size = new Size(bannerWidth, bodyHeight);
+            leftBanner.BackColor = Color.FromArgb(16, 42, 102);
             leftBanner.Paint += (s, e) =>
             {
                 Graphics g = e.Graphics;
-                using (Font f = new Font("Segoe UI", 16F, FontStyle.Bold))
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+
+                // Decorative icon box (matches classic Inno/NSIS style monitor/cube emblem)
+                using (Pen pen = new Pen(Color.FromArgb(60, 100, 190), 2))
+                {
+                    g.DrawRectangle(pen, 20, 25, 48, 48);
+                }
+                using (Brush b = new SolidBrush(Color.FromArgb(30, 70, 150)))
+                {
+                    g.FillRectangle(b, 21, 26, 46, 46);
+                }
+                // Database cylinder graphic inside emblem
+                using (Pen pen = new Pen(Color.White, 2))
+                using (Brush b = new SolidBrush(Color.FromArgb(140, 185, 255)))
+                {
+                    g.DrawEllipse(pen, 28, 33, 32, 10);
+                    g.FillEllipse(b, 28, 33, 32, 10);
+                    g.DrawLine(pen, 28, 38, 28, 55);
+                    g.DrawLine(pen, 60, 38, 60, 55);
+                    g.DrawArc(pen, 28, 48, 32, 14, 0, 180);
+                }
+
+                // Brand text
+                using (Font f = new Font("Segoe UI", 15F, FontStyle.Bold))
                 using (Brush b = new SolidBrush(Color.White))
                 {
-                    g.DrawString("LOOM // DB", f, b, new PointF(15, 30));
+                    g.DrawString("LOOM // DB", f, b, new PointF(18, 90));
                 }
-                using (Font f = new Font("Segoe UI", 8F, FontStyle.Regular))
-                using (Brush b = new SolidBrush(Color.FromArgb(180, 205, 255)))
+
+                using (Font f = new Font("Segoe UI", 8.5F, FontStyle.Regular))
+                using (Brush b = new SolidBrush(Color.FromArgb(195, 218, 255)))
                 {
-                    g.DrawString("The World's Lightest\nMulti-Modal Database\n\nVersion 0.1.0\nSub-512KB RAM Profile", f, b, new PointF(15, 75));
+                    g.DrawString("The World's Lightest\nMulti-Modal Database\n\nVersion 0.1.0\nSub-512KB RAM Profile\nZero-Dependency Single File", f, b, new PointF(18, 130));
                 }
             };
             this.Controls.Add(leftBanner);
 
-            // Footer Panel
-            footerPanel = new Panel();
-            footerPanel.Dock = DockStyle.Bottom;
-            footerPanel.Height = 55;
-            footerPanel.BackColor = SystemColors.Control;
-            footerPanel.Paint += (s, e) =>
-            {
-                e.Graphics.DrawLine(SystemPens.ControlDark, 0, 0, footerPanel.Width, 0);
-            };
-
-            btnCancel = new Button();
-            btnCancel.Text = "Cancel";
-            btnCancel.Size = new Size(85, 28);
-            btnCancel.Location = new Point(465, 14);
-            btnCancel.Click += (s, e) => this.Close();
-            footerPanel.Controls.Add(btnCancel);
-
-            btnNext = new Button();
-            btnNext.Text = "Next >";
-            btnNext.Size = new Size(85, 28);
-            btnNext.Location = new Point(370, 14);
-            btnNext.Click += (s, e) => NextStep();
-            footerPanel.Controls.Add(btnNext);
-
-            btnBack = new Button();
-            btnBack.Text = "< Back";
-            btnBack.Size = new Size(85, 28);
-            btnBack.Location = new Point(280, 14);
-            btnBack.Click += (s, e) => BackStep();
-            footerPanel.Controls.Add(btnBack);
-
-            this.Controls.Add(footerPanel);
-
-            // Content Panel
+            // 2. Main Content Panel (Clean White Background, Zero Overlap)
             contentPanel = new Panel();
-            contentPanel.Dock = DockStyle.Fill;
-            contentPanel.Padding = new Padding(25, 20, 25, 20);
+            contentPanel.Location = new Point(bannerWidth, 0);
+            contentPanel.Size = new Size(contentWidth, bodyHeight);
+            contentPanel.BackColor = Color.White;
             this.Controls.Add(contentPanel);
 
+            // Title Label
             lblTitle = new Label();
-            lblTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            lblTitle.Location = new Point(20, 20);
-            lblTitle.Size = new Size(360, 50);
+            lblTitle.Font = new Font("Segoe UI", 12.5F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.FromArgb(15, 23, 42);
+            lblTitle.BackColor = Color.Transparent;
+            lblTitle.Location = new Point(25, 25);
+            lblTitle.Size = new Size(contentWidth - 50, 48);
             contentPanel.Controls.Add(lblTitle);
 
+            // Description Label
             lblDescription = new Label();
-            lblDescription.Location = new Point(22, 75);
-            lblDescription.Size = new Size(355, 120);
-            lblDescription.Font = new Font("Segoe UI", 9F);
+            lblDescription.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+            lblDescription.ForeColor = Color.FromArgb(51, 65, 85);
+            lblDescription.BackColor = Color.Transparent;
+            lblDescription.Location = new Point(25, 80);
+            lblDescription.Size = new Size(contentWidth - 50, 110);
             contentPanel.Controls.Add(lblDescription);
 
-            // Path Controls
+            // Path Controls (Step 2)
             txtInstallPath = new TextBox();
-            txtInstallPath.Location = new Point(22, 195);
-            txtInstallPath.Size = new Size(270, 26);
+            txtInstallPath.Font = new Font("Segoe UI", 9F);
+            txtInstallPath.Location = new Point(25, 200);
+            txtInstallPath.Size = new Size(295, 25);
             txtInstallPath.Text = this.installDir;
             txtInstallPath.Visible = false;
             contentPanel.Controls.Add(txtInstallPath);
 
             btnBrowse = new Button();
             btnBrowse.Text = "Browse...";
-            btnBrowse.Location = new Point(300, 194);
-            btnBrowse.Size = new Size(75, 26);
+            btnBrowse.Font = new Font("Segoe UI", 9F);
+            btnBrowse.Location = new Point(328, 199);
+            btnBrowse.Size = new Size(80, 27);
             btnBrowse.Visible = false;
             btnBrowse.Click += (s, e) =>
             {
@@ -157,53 +163,105 @@ namespace LoomDB.Installer
             };
             contentPanel.Controls.Add(btnBrowse);
 
-            // Checkboxes
+            // Checkbox: Service (Step 2)
             chkService = new CheckBox();
             chkService.Text = "Register LoomDB as automatic Windows Background Service (Port 8484)";
-            chkService.Location = new Point(22, 235);
-            chkService.Size = new Size(355, 40);
+            chkService.Font = new Font("Segoe UI", 8.5F);
+            chkService.ForeColor = Color.FromArgb(30, 41, 59);
+            chkService.BackColor = Color.Transparent;
+            chkService.Location = new Point(25, 240);
+            chkService.Size = new Size(385, 36);
             chkService.Checked = true;
             chkService.Visible = false;
             contentPanel.Controls.Add(chkService);
 
+            // Checkbox: Launch Now (Step 4)
             chkLaunchNow = new CheckBox();
             chkLaunchNow.Text = "Launch LoomDB Interactive Shell immediately";
-            chkLaunchNow.Location = new Point(22, 200);
-            chkLaunchNow.Size = new Size(355, 28);
+            chkLaunchNow.Font = new Font("Segoe UI", 9F);
+            chkLaunchNow.ForeColor = Color.FromArgb(30, 41, 59);
+            chkLaunchNow.BackColor = Color.Transparent;
+            chkLaunchNow.Location = new Point(25, 205);
+            chkLaunchNow.Size = new Size(385, 26);
             chkLaunchNow.Checked = true;
             chkLaunchNow.Visible = false;
             contentPanel.Controls.Add(chkLaunchNow);
 
-            // Progress Bar
+            // Progress Bar (Step 3)
             progressBar = new ProgressBar();
-            progressBar.Location = new Point(22, 195);
-            progressBar.Size = new Size(350, 22);
+            progressBar.Location = new Point(25, 200);
+            progressBar.Size = new Size(385, 22);
             progressBar.Style = ProgressBarStyle.Continuous;
             progressBar.Visible = false;
             contentPanel.Controls.Add(progressBar);
 
+            // Status Label (Step 3)
             lblStatus = new Label();
-            lblStatus.Location = new Point(22, 225);
-            lblStatus.Size = new Size(350, 40);
-            lblStatus.ForeColor = Color.DarkSlateGray;
+            lblStatus.Font = new Font("Segoe UI", 8.5F);
+            lblStatus.ForeColor = Color.FromArgb(71, 85, 105);
+            lblStatus.BackColor = Color.Transparent;
+            lblStatus.Location = new Point(25, 230);
+            lblStatus.Size = new Size(385, 36);
             lblStatus.Visible = false;
             contentPanel.Controls.Add(lblStatus);
 
-            // License radio buttons
+            // License radio buttons (Step 1)
             radAccept = new RadioButton();
             radAccept.Text = "I accept the terms in the License Agreement (MIT / Apache-2.0)";
-            radAccept.Location = new Point(22, 195);
-            radAccept.Size = new Size(355, 26);
+            radAccept.Font = new Font("Segoe UI", 9F);
+            radAccept.ForeColor = Color.FromArgb(30, 41, 59);
+            radAccept.BackColor = Color.Transparent;
+            radAccept.Location = new Point(25, 200);
+            radAccept.Size = new Size(385, 26);
             radAccept.Checked = true;
             radAccept.Visible = false;
             contentPanel.Controls.Add(radAccept);
 
             radDecline = new RadioButton();
             radDecline.Text = "I do not accept the terms in the License Agreement";
-            radDecline.Location = new Point(22, 225);
-            radDecline.Size = new Size(355, 26);
+            radDecline.Font = new Font("Segoe UI", 9F);
+            radDecline.ForeColor = Color.FromArgb(30, 41, 59);
+            radDecline.BackColor = Color.Transparent;
+            radDecline.Location = new Point(25, 230);
+            radDecline.Size = new Size(385, 26);
             radDecline.Visible = false;
             contentPanel.Controls.Add(radDecline);
+
+            // 3. Footer Panel (Standard Win32 Dialog Footer)
+            footerPanel = new Panel();
+            footerPanel.Location = new Point(0, bodyHeight);
+            footerPanel.Size = new Size(this.ClientSize.Width, footerHeight);
+            footerPanel.BackColor = SystemColors.Control;
+            footerPanel.Paint += (s, e) =>
+            {
+                e.Graphics.DrawLine(SystemPens.ControlDark, 0, 0, footerPanel.Width, 0);
+            };
+
+            btnCancel = new Button();
+            btnCancel.Text = "Cancel";
+            btnCancel.Font = new Font("Segoe UI", 9F);
+            btnCancel.Size = new Size(85, 28);
+            btnCancel.Location = new Point(515, 13);
+            btnCancel.Click += (s, e) => this.Close();
+            footerPanel.Controls.Add(btnCancel);
+
+            btnNext = new Button();
+            btnNext.Text = "Next >";
+            btnNext.Font = new Font("Segoe UI", 9F);
+            btnNext.Size = new Size(85, 28);
+            btnNext.Location = new Point(420, 13);
+            btnNext.Click += (s, e) => NextStep();
+            footerPanel.Controls.Add(btnNext);
+
+            btnBack = new Button();
+            btnBack.Text = "< Back";
+            btnBack.Font = new Font("Segoe UI", 9F);
+            btnBack.Size = new Size(85, 28);
+            btnBack.Location = new Point(330, 13);
+            btnBack.Click += (s, e) => BackStep();
+            footerPanel.Controls.Add(btnBack);
+
+            this.Controls.Add(footerPanel);
         }
 
         private void ShowStep(int step)
@@ -219,13 +277,14 @@ namespace LoomDB.Installer
             radAccept.Visible = false;
             radDecline.Visible = false;
 
-            btnBack.Enabled = (step > 0 && step < 4);
+            btnBack.Enabled = (step > 0 && step < 3);
             btnNext.Enabled = true;
             btnNext.Text = "Next >";
 
             switch (step)
             {
                 case 0:
+                    lblDescription.Size = new Size(contentPanel.Width - 50, 180);
                     lblTitle.Text = "Welcome to the LoomDB Setup Wizard";
                     lblDescription.Text = "This wizard will guide you through the installation of LoomDB 0.1.0 (x64).\n\n" +
                                            "LoomDB is the world's lightest multi-modal database, weaving SQL Relational, " +
@@ -235,25 +294,31 @@ namespace LoomDB.Installer
                     break;
 
                 case 1:
+                    lblDescription.Size = new Size(contentPanel.Width - 50, 110);
                     lblTitle.Text = "License Agreement";
                     lblDescription.Text = "Please review the license terms before installing LoomDB.\n\n" +
                                            "LoomDB is open source software distributed under dual Apache-2.0 and MIT licenses.\n" +
                                            "You are granted full permission to use, embed, modify, and distribute LoomDB in both " +
-                                           "personal and commercial proprietary applications free of charge.";
+                                           "personal and commercial proprietary applications free of charge.\n\n" +
+                                           "If you accept the terms of the agreement, click Next to continue.";
                     radAccept.Visible = true;
                     radDecline.Visible = true;
                     break;
 
                 case 2:
+                    lblDescription.Size = new Size(contentPanel.Width - 50, 110);
                     lblTitle.Text = "Choose Install Location";
                     lblDescription.Text = "Setup will install LoomDB and configure command-line access in the following folder.\n\n" +
-                                           "To install to this folder, click Next. To install to a different folder, click Browse and select another folder.";
+                                           "To install to this folder, click Next. To install to a different folder, click Browse and select another folder.\n\n" +
+                                           "Space required: ~25 MB\nSpace available on drive: >50 GB";
                     txtInstallPath.Visible = true;
                     btnBrowse.Visible = true;
                     chkService.Visible = true;
+                    btnNext.Text = "Install";
                     break;
 
                 case 3:
+                    lblDescription.Size = new Size(contentPanel.Width - 50, 110);
                     lblTitle.Text = "Installing LoomDB";
                     lblDescription.Text = "Please wait while Setup installs LoomDB on your computer.";
                     progressBar.Visible = true;
@@ -267,9 +332,10 @@ namespace LoomDB.Installer
                     break;
 
                 case 4:
+                    lblDescription.Size = new Size(contentPanel.Width - 50, 120);
                     lblTitle.Text = "Completing the LoomDB Setup Wizard";
                     lblDescription.Text = "LoomDB has been successfully installed on your computer.\n\n" +
-                                           "You can now run 'loom' from any Command Prompt or PowerShell terminal.\n\n" +
+                                           "You can now run 'loom' from any Command Prompt or PowerShell terminal to access the interactive shell.\n\n" +
                                            "Click Finish to exit Setup.";
                     chkLaunchNow.Visible = true;
                     btnBack.Visible = false;
@@ -282,7 +348,7 @@ namespace LoomDB.Installer
         private void PerformInstall()
         {
             Timer t = new Timer();
-            t.Interval = 400;
+            t.Interval = 350;
             int progress = 20;
 
             t.Tick += (s, e) =>
@@ -291,6 +357,14 @@ namespace LoomDB.Installer
                 if (progress <= 90)
                 {
                     progressBar.Value = progress;
+                    if (progress == 45)
+                    {
+                        lblStatus.Text = "Configuring system environment PATH...";
+                    }
+                    else if (progress == 70)
+                    {
+                        lblStatus.Text = "Setting up local container and studio dashboard...";
+                    }
                 }
                 else
                 {
