@@ -1,14 +1,48 @@
 // ==============================================================================
-// LoomDB Client Runtime & Interactive Engine
+// LoomDB Client Runtime & Motion Engine
+// Strict Rule: Zero Emojis. Clean Technical Telemetry & Motion.
 // ==============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  initScrollAnimations();
   initOSDetection();
   initTerminal();
   initCopyButtons();
 });
 
-// 1. OS & Architecture Detection
+// 1. Scroll-Driven Progress Bar & Intersection Reveal Animations
+function initScrollAnimations() {
+  const progressBar = document.getElementById('scrollProgressBar');
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    if (scrollHeight > 0 && progressBar) {
+      const progress = (scrollTop / scrollHeight) * 100;
+      progressBar.style.width = `${progress}%`;
+    }
+  }, { passive: true });
+
+  // Intersection Observer for staggered scroll reveals
+  const revealElements = document.querySelectorAll('.reveal-on-scroll');
+  const observerOptions = {
+    threshold: 0.12,
+    rootMargin: '0px 0px -40px 0px'
+  };
+
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  revealElements.forEach(el => revealObserver.observe(el));
+}
+
+// 2. OS & Architecture Detection
 function initOSDetection() {
   const ua = window.navigator.userAgent.toLowerCase();
   const platform = window.navigator.platform ? window.navigator.platform.toLowerCase() : '';
@@ -19,7 +53,6 @@ function initOSDetection() {
   let activeCardId = 'os-win';
 
   if (ua.includes('mac') || platform.includes('mac')) {
-    // Check for Apple Silicon or Intel
     const isArm = ua.includes('arm') || (navigator.userAgentData && navigator.userAgentData.architecture === 'arm');
     if (isArm) {
       detectedOS = 'macOS (Apple Silicon M1/M2/M3/M4)';
@@ -53,7 +86,7 @@ function initOSDetection() {
   if (osLabel) osLabel.textContent = detectedOS;
   if (mainBtn) {
     mainBtn.href = `./downloads/${filename}`;
-    mainBtn.innerHTML = `<span>⬇ Download LoomDB for ${detectedOS.split(' ')[0]}</span> <span style="opacity: 0.7; font-size: 0.75rem;">(v0.1.0)</span>`;
+    mainBtn.innerHTML = `<span>[DOWNLOAD] LoomDB for ${detectedOS.split(' ')[0]}</span> <span style="opacity: 0.65; font-size: 0.72rem; margin-left: 4px;">(v0.1.0)</span>`;
   }
   if (cmdElem) cmdElem.textContent = installCmd;
 
@@ -65,7 +98,7 @@ function initOSDetection() {
   }
 }
 
-// 2. Interactive Terminal Emulator
+// 3. Interactive Terminal Emulator (Zero Emojis)
 const terminalPresets = {
   vector: {
     query: `SELECT id, topic, notes, 
@@ -74,12 +107,12 @@ FROM memories
 WHERE topic LIKE '%Rust%'
 ORDER BY score DESC
 LIMIT 2;`,
-    output: `┌────────┬──────────────────────────────┬──────────────────────────┬────────┐
-│ id     │ topic                        │ notes                    │ score  │
-├────────┼──────────────────────────────┼──────────────────────────┼────────┤
-│ mem_01 │ High-Performance Rust Storage│ Micro profile <512KB RAM │ 0.9842 │
-│ mem_02 │ Fused HNSW SIMD Traversal    │ Single-pass filter search│ 0.9120 │
-└────────┴──────────────────────────────┴──────────────────────────┴────────┘
+    output: `+--------+------------------------------+--------------------------+--------+
+| id     | topic                        | notes                    | score  |
++--------+------------------------------+--------------------------+--------+
+| mem_01 | High-Performance Rust Storage| Micro profile <512KB RAM | 0.9842 |
+| mem_02 | Fused HNSW SIMD Traversal    | Single-pass filter search| 0.9120 |
++--------+------------------------------+--------------------------+--------+
 2 rows in set. Execution time: 0.38 ms (SIMD fused)`
   },
   document: {
@@ -87,33 +120,33 @@ LIMIT 2;`,
 FROM articles
 WHERE 'ai' IN profile->'tags'
 LIMIT 2;`,
-    output: `┌────────┬────────────────────┬─────────────────────────────┐
-│ id     │ author             │ tags                        │
-├────────┼────────────────────┼─────────────────────────────┤
-│ art_01 │ Maya Lin           │ ["ai", "storage", "crdt"]   │
-│ art_04 │ Alex Thorne        │ ["ai", "vector", "rust"]    │
-└────────┴────────────────────┴─────────────────────────────┘
+    output: `+--------+--------------------+-----------------------------+
+| id     | author             | tags                        |
++--------+--------------------+-----------------------------+
+| art_01 | Maya Lin           | ["ai", "storage", "crdt"]   |
+| art_04 | Alex Thorne        | ["ai", "vector", "rust"]    |
++--------+--------------------+-----------------------------+
 2 rows in set. Execution time: 0.42 ms`
   },
   timetravel: {
     query: `SELECT balance FROM user_accounts 
 AS OF TIMESTAMP '2026-11-01T00:00:00Z'
 WHERE account_id = 'acc_4921';`,
-    output: `┌───────────────────┬──────────────┐
-│ account_id        │ balance      │
-├───────────────────┼──────────────┤
-│ acc_4921          │ $14,250.00   │
-└───────────────────┴──────────────┘
+    output: `+-------------------+--------------+
+| account_id        | balance      |
++-------------------+--------------+
+| acc_4921          | $14,250.00   |
++-------------------+--------------+
 Snapshot: v18492 (Zero-copy CoW MVCC branch). Execution time: 0.29 ms`
   },
   live: {
     query: `LIVE SELECT order_id, customer, total_usd 
 FROM orders 
 WHERE status = 'pending';`,
-    output: `● Continuous Subscription Active (Stream ID: 0x4f1a)
+    output: `[STREAM_OPEN] Continuous Subscription Active (Stream ID: 0x4f1a)
 [WAL CDC +0.02s] INSERT -> {"order_id": "ord_881", "customer": "Dana", "total_usd": 128.50}
 [WAL CDC +1.14s] UPDATE -> {"order_id": "ord_881", "status": "processing"}
-Watching WAL commits with zero polling overhead...`
+Watching WAL commits with zero polling overhead.`
   }
 };
 
@@ -162,20 +195,20 @@ function runTerminalQuery(query, outputText) {
 
 function handleManualInput(input) {
   if (input === '.help') {
-    runTerminalQuery(input, `LoomDB Dot-Commands:
+    runTerminalQuery(input, `LoomDB Commands:
   .tables     List tables & collections in single .loom file
   .stats      Show virtual pages, WAL ring, and RAM consumption
   .studio     Export and view Web Studio UI
   .exit       Exit terminal`);
     return;
   } else if (input === '.tables') {
-    runTerminalQuery(input, `┌──────────────┬─────────────┬─────────────┐
-│ Name         │ Type        │ Engine      │
-├──────────────┼─────────────┼─────────────┤
-│ memories     │ Multi-Modal │ HNSW + JSON │
-│ users        │ Relational  │ B+Tree      │
-│ telemetry    │ Time-Series │ Gorilla XOR │
-└──────────────┴─────────────┴─────────────┘`);
+    runTerminalQuery(input, `+--------------+-------------+-------------+
+| Name         | Type        | Engine      |
++--------------+-------------+-------------+
+| memories     | Multi-Modal | HNSW + JSON |
+| users        | Relational  | B+Tree      |
+| telemetry    | Time-Series | Gorilla XOR |
++--------------+-------------+-------------+`);
     return;
   } else if (input === '.stats') {
     runTerminalQuery(input, `Container: ./data.loom (40,960 bytes)
@@ -185,16 +218,14 @@ RAM Overhead: 482 KB (Micro Profile)`);
     return;
   }
 
-  // Generic query simulation
   const start = performance.now();
   setTimeout(() => {
-    const elapsed = (performance.now() - start).toFixed(2);
     runTerminalQuery(input, `Query OK. (0.34 ms)
 [LoomStore] 1 record processed.`);
-  }, 80);
+  }, 60);
 }
 
-// 3. Copy to Clipboard & Toast
+// 4. Copy to Clipboard & Toast (Zero Emojis)
 function initCopyButtons() {
   document.querySelectorAll('.btn-copy-cmd').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -202,7 +233,7 @@ function initCopyButtons() {
       const elem = document.getElementById(targetId);
       if (elem) {
         navigator.clipboard.writeText(elem.textContent.trim()).then(() => {
-          showToast('Copied installation command to clipboard!');
+          showToast('[COPIED] Installation command copied to clipboard');
         });
       }
     });
@@ -220,7 +251,7 @@ function showToast(msg) {
   toast.classList.add('show');
   setTimeout(() => {
     toast.classList.remove('show');
-  }, 2500);
+  }, 2400);
 }
 
 function escapeHtml(string) {
