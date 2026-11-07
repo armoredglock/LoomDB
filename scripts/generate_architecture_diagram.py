@@ -186,19 +186,37 @@ def generate_diagram():
         draw.text((cx+16, ny), "Novelty", font=font_novelty, fill=col)
         draw.text((cx+16, ny+18), cd["novelty"], font=font_novelty_text, fill=MUTED)
 
-    # ─── FOOTER: 6th Primitive ───
-    fy = card_y + card_h + 18
-    fh = 42
+    # ─── FOOTER: 6th Primitive (Cleanly spaced, zero overlaps) ───
+    fy = card_y + card_h + 20
+    fh = 48
     rounded_rect(draw, [start_x, fy, start_x+total_w, fy+fh], 8, fill=SURFACE, outline=BORDER, width=1)
-    draw.ellipse([start_x+16, fy+9, start_x+38, fy+33], fill=CYAN)
-    draw.text((start_x+22, fy+11), "6", font=font_card_title, fill=BG)
-    draw.text((start_x+48, fy+10), "Self-Queryable System Telemetry", font=font_card_title, fill=WHITE)
-    draw.text((start_x+335, fy+12), "SELECT * FROM _sys_telemetry;", font=font_api, fill=CYAN)
-    draw.text((start_x+610, fy+12), "Latency percentiles, cache hits, WAL volume, page faults, and query counts as a native data modality", font=font_card_body, fill=SECONDARY)
+    
+    # Badge 6
+    draw.ellipse([start_x+16, fy+10, start_x+42, fy+36], fill=CYAN)
+    draw.text((start_x+24, fy+12), "6", font=font_card_title, fill=BG)
+    
+    # Title
+    title_text = "Self-Queryable System Telemetry"
+    draw.text((start_x+54, fy+13), title_text, font=font_card_title, fill=WHITE)
+    t_bbox = font_card_title.getbbox(title_text)
+    t_w = t_bbox[2] - t_bbox[0]
+    
+    # API query pill with comfortable margin
+    query_x = start_x + 54 + t_w + 24
+    query_text = "SELECT * FROM _sys_telemetry;"
+    q_bbox = font_api.getbbox(query_text)
+    q_w = (q_bbox[2] - q_bbox[0]) + 18
+    draw.rectangle([query_x, fy+11, query_x+q_w, fy+35], fill=CARD_BG, outline=BORDER, width=1)
+    draw.text((query_x+9, fy+15), query_text, font=font_api, fill=CYAN)
+    
+    # Description with comfortable margin
+    desc_x = query_x + q_w + 24
+    draw.text((desc_x, fy+14), "Latency percentiles, cache hits, WAL volume, page faults, and query counts as a native data modality", font=font_card_body, fill=SECONDARY)
 
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     img.save(OUTPUT_PATH, "PNG", optimize=True)
     print(f"Diagram generated: {OUTPUT_PATH} ({WIDTH}x{HEIGHT})")
+
 
 if __name__ == "__main__":
     generate_diagram()
