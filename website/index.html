@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; font-src https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:;">
   <title>LoomDB &mdash; High-Performance Multi-Modal Database Engine</title>
   <meta name="description" content="LoomDB is a sub-megabyte, zero-dependency multi-modal database in a single portable .loom container file. SQL, JSON, AI Vectors, and Time-Series in <512KB RAM.">
   <link rel="stylesheet" href="styles.css">
@@ -28,7 +31,7 @@
         <a href="#fields" class="nav-item-link">Why LoomDB</a>
         <a href="#benchmarks" class="nav-item-link">Benchmarks</a>
         <a href="#quickstart" class="nav-item-link">Developer SDKs</a>
-        <a href="https://github.com/loomdb/loomdb" target="_blank" class="nav-item-link">GitHub ↗</a>
+        <a href="https://github.com/loomdb/loomdb" target="_blank" rel="noopener noreferrer" class="nav-item-link">GitHub ↗</a>
         <a href="#downloads" class="btn-nav-primary">Get LoomDB</a>
       </div>
     </div>
@@ -483,7 +486,7 @@ println!("Found: {:?}", hits);</pre>
             <a id="mainDownloadBtn" href="./downloads/loom-setup.exe" class="btn-primary-download">
               <span>Download loom-setup.exe</span>
             </a>
-            <a href="https://github.com/loomdb/loomdb/releases" target="_blank" class="btn-secondary-link">
+            <a href="https://github.com/loomdb/loomdb/releases" target="_blank" rel="noopener noreferrer" class="btn-secondary-link">
               <span>Release Notes &amp; Verification ↗</span>
             </a>
           </div>
@@ -572,7 +575,7 @@ println!("Found: {:?}", hits);</pre>
         <a href="#benchmarks" class="footer-link">Benchmarks</a>
         <a href="#quickstart" class="footer-link">SDKs</a>
         <a href="#downloads" class="footer-link">Download</a>
-        <a href="https://github.com/loomdb/loomdb" target="_blank" class="footer-link">GitHub</a>
+        <a href="https://github.com/loomdb/loomdb" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
       </div>
     </div>
   </footer>
