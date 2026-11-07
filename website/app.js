@@ -1,9 +1,15 @@
 // ==============================================================================
 // LoomDB Client Runtime & Interactive Motion Engine
+// High-Craft Systems Engineering, Titanium Metal & Warm Amber Aesthetic
 // ==============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
+  initSpotlightEffect();
+  initNavScrollTracking();
+  initParadigmWeavingHover();
+  initContainerLayoutMap();
+  initBenchmarkVisualizer();
   initOSSelection();
   initTerminalWithQuota();
   initSDKTabs();
@@ -25,7 +31,7 @@ function initScrollAnimations() {
 
   const revealElements = document.querySelectorAll('.reveal-on-scroll');
   const observerOptions = {
-    threshold: 0.1,
+    threshold: 0.08,
     rootMargin: '0px 0px -40px 0px'
   };
 
@@ -41,7 +47,162 @@ function initScrollAnimations() {
   revealElements.forEach(el => revealObserver.observe(el));
 }
 
-// 2. Platform Detection & Interactive OS Card Switching
+// 2. Interactive Spotlight Cursor Effect on Cards
+function initSpotlightEffect() {
+  const cards = document.querySelectorAll('.spotlight-card');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
+}
+
+// 3. Navigation Anchor Tracking
+function initNavScrollTracking() {
+  const sections = document.querySelectorAll('section[id], header.hero-section');
+  const navLinks = document.querySelectorAll('.nav-item-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach(link => {
+          link.classList.remove('active-nav');
+          if (link.getAttribute('href') === `#${id}`) {
+            link.classList.add('active-nav');
+          }
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+}
+
+// 4. Interactive Paradigm Weaving Connector
+function initParadigmWeavingHover() {
+  const flowRows = document.querySelectorAll('.flow-row');
+  const streamLines = document.querySelectorAll('.flow-stream-line');
+
+  flowRows.forEach(row => {
+    const strandIndex = row.getAttribute('data-strand');
+
+    row.addEventListener('mouseenter', () => {
+      flowRows.forEach(r => r.classList.remove('active-row'));
+      row.classList.add('active-row');
+
+      streamLines.forEach(l => l.classList.remove('active-stream'));
+      const activeLine = document.getElementById(`stream-${strandIndex}`);
+      if (activeLine) activeLine.classList.add('active-stream');
+    });
+
+    row.addEventListener('mouseleave', () => {
+      row.classList.remove('active-row');
+      streamLines.forEach(l => l.classList.remove('active-stream'));
+    });
+  });
+}
+
+// 5. Interactive Container Layout Map
+function initContainerLayoutMap() {
+  const blocks = document.querySelectorAll('.map-block');
+  const descElem = document.getElementById('layoutMapDesc');
+
+  blocks.forEach(block => {
+    block.addEventListener('click', () => {
+      blocks.forEach(b => b.classList.remove('active-block'));
+      block.classList.add('active-block');
+
+      const descText = block.getAttribute('data-desc');
+      const titleText = block.querySelector('strong') ? block.querySelector('strong').textContent : '';
+      if (descElem) {
+        descElem.innerHTML = `<span>Active Layer: <strong>${escapeHtml(titleText)}</strong> &mdash; ${escapeHtml(descText)}</span>
+<span style="font-size: 0.72rem; color: var(--accent-amber);">PAGED TO DISK</span>`;
+      }
+    });
+  });
+}
+
+// 6. Interactive Benchmark Comparison Visualizer
+const BENCHMARK_DATA = {
+  ram: [
+    { name: 'LoomDB', score: '< 0.48 MB', width: '4%', isLoom: true },
+    { name: 'SQLite', score: '~ 4.2 MB', width: '14%', isLoom: false },
+    { name: 'DuckDB', score: '~ 32 MB', width: '38%', isLoom: false },
+    { name: 'MongoDB', score: '~ 350 MB', width: '95%', isLoom: false },
+    { name: 'Pinecone', score: '~ 210 MB', width: '68%', isLoom: false },
+  ],
+  latency: [
+    { name: 'LoomDB', score: '0.38 ms', width: '5%', isLoom: true },
+    { name: 'SQLite', score: '1.85 ms', width: '20%', isLoom: false },
+    { name: 'DuckDB', score: '11.4 ms', width: '44%', isLoom: false },
+    { name: 'MongoDB', score: '165 ms', width: '92%', isLoom: false },
+    { name: 'Pinecone', score: '220 ms', width: '98%', isLoom: false },
+  ],
+  size: [
+    { name: 'LoomDB', score: '< 0.85 MB', width: '4%', isLoom: true },
+    { name: 'SQLite', score: '~ 0.80 MB', width: '4%', isLoom: false },
+    { name: 'DuckDB', score: '~ 18 MB', width: '42%', isLoom: false },
+    { name: 'MongoDB', score: '~ 120 MB', width: '95%', isLoom: false },
+    { name: 'Pinecone', score: '~ 45 MB', width: '58%', isLoom: false },
+  ]
+};
+
+function renderBenchmarks(metricKey) {
+  const container = document.getElementById('benchBarsContainer');
+  const items = BENCHMARK_DATA[metricKey] || BENCHMARK_DATA.ram;
+  if (!container) return;
+
+  container.innerHTML = items.map(item => `
+    <div class="bench-bar-row">
+      <span class="bench-name ${item.isLoom ? 'loom-name' : ''}">${escapeHtml(item.name)}</span>
+      <div class="bench-track">
+        <div class="bench-fill ${item.isLoom ? 'loom-fill' : ''}" style="width: 0%;" data-target-width="${item.width}"></div>
+      </div>
+      <span class="bench-score ${item.isLoom ? 'loom-score' : ''}">${escapeHtml(item.score)}</span>
+    </div>
+  `).join('');
+
+  // Trigger smooth bar width expansion
+  requestAnimationFrame(() => {
+    container.querySelectorAll('.bench-fill').forEach(fill => {
+      const target = fill.getAttribute('data-target-width');
+      fill.style.width = target;
+    });
+  });
+}
+
+function initBenchmarkVisualizer() {
+  const tabs = document.querySelectorAll('.bench-tab-btn');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const metric = tab.getAttribute('data-metric');
+      renderBenchmarks(metric);
+    });
+  });
+
+  // Initial trigger when benchmark section is visible
+  const benchBox = document.querySelector('.benchmark-interactive-box');
+  if (benchBox) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          renderBenchmarks('ram');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    observer.observe(benchBox);
+  }
+}
+
+// 7. Platform Detection & Interactive OS Card Switching
 const PLATFORM_CONFIGS = {
   win: {
     name: 'Windows (64-bit)',
@@ -106,7 +267,7 @@ function initOSSelection() {
   });
 }
 
-// 3. Terminal Emulator with Sandbox Quota Limit (Max 3 Queries)
+// 8. Terminal Emulator with Sandbox Quota Limit (Max 3 Queries)
 const MAX_SANDBOX_QUERIES = 3;
 let sandboxQueryCount = 0;
 
@@ -240,8 +401,8 @@ function runTerminalQuery(query, outputText) {
   logDiv.className = 'term-log';
 
   logDiv.innerHTML = `
-<div style="color: #1cb58e; font-weight: 700; margin-bottom: 4px;">loom&gt; <span style="color: #fff; font-weight: normal;">${escapeHtml(query)}</span></div>
-<div style="color: #8b949e; line-height: 1.5;">${escapeHtml(outputText)}</div>
+<div style="color: var(--accent-amber); font-weight: 700; margin-bottom: 4px;">loom&gt; <span style="color: #fff; font-weight: normal;">${escapeHtml(query)}</span></div>
+<div style="color: #94a3b8; line-height: 1.5;">${escapeHtml(outputText)}</div>
 `;
   terminalBody.appendChild(logDiv);
   terminalBody.scrollTop = terminalBody.scrollHeight;
@@ -267,14 +428,13 @@ function handleManualInput(input) {
     return;
   }
 
-  const start = performance.now();
   setTimeout(() => {
     runTerminalQuery(input, `Query OK. (0.34 ms)
 [LoomStore] 1 record processed.`);
   }, 50);
 }
 
-// 4. Developer SDK Code Tabs Switcher
+// 9. Developer SDK Code Tabs Switcher
 const SDK_EXAMPLES = {
   rust: {
     title: "main.rs — Embedded In-Process Zero-Copy Access",
@@ -386,7 +546,7 @@ function initSDKTabs() {
   });
 }
 
-// 5. Copy Command to Clipboard
+// 10. Copy Command to Clipboard
 function initCopyButtons() {
   document.querySelectorAll('.btn-copy-cmd').forEach(btn => {
     btn.addEventListener('click', () => {

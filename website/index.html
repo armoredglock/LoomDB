@@ -17,7 +17,7 @@
   <div id="scrollProgressBar"></div>
   <div class="grid-overlay"></div>
 
-  <!-- Navigation Bar (Strict Order Matches On-Page Flow) -->
+  <!-- Navigation Bar (Order Matches On-Page Flow) -->
   <nav class="site-nav">
     <div class="container nav-wrap">
       <a href="#" class="brand-unit">
@@ -37,11 +37,11 @@
     </div>
   </nav>
 
-  <!-- 1. Hero Section (Wide 2-Column Space Utilization) -->
+  <!-- 1. Hero Section (Wide 2-Column with Metric Counters & Weaving Graphic) -->
   <header class="hero-section">
     <div class="container">
       <div class="hero-grid">
-        <!-- Left: Copy & Value Proposition -->
+        <!-- Left: Copy, Value Proposition & Metric Strip -->
         <div class="reveal-on-scroll">
           <div class="eyebrow">Engine Spec: Micro Profile &middot; Sub-850 KB Stripped &middot; Zero Thread Idle</div>
 
@@ -66,51 +66,80 @@
               <span>&darr;</span>
             </a>
           </div>
+
+          <!-- Promotional Metric Strip -->
+          <div class="metric-strip">
+            <div class="metric-item">
+              <span class="metric-value">&lt; 512 KB</span>
+              <span class="metric-label">Idle RAM Overhead</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-value">0.38 ms</span>
+              <span class="metric-label">SIMD Fused Search</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-value">85%</span>
+              <span class="metric-label">Delta Compression</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-value">1 File</span>
+              <span class="metric-label">Portable Container</span>
+            </div>
+          </div>
         </div>
 
-        <!-- Right: Multi-Model Paradigm Convergence Diagram -->
-        <div class="hero-visual-card reveal-on-scroll delay-1">
+        <!-- Right: Multi-Modal Paradigm Convergence Interactive Graphic -->
+        <div class="hero-visual-card spotlight-card reveal-on-scroll delay-1">
           <div class="visual-titlebar">
             <span class="visual-title">Multi-Modal Paradigm Convergence</span>
-            <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-teal);">ZERO SILOS</span>
+            <span class="visual-badge">CONVERGED FABRIC</span>
           </div>
 
           <div class="paradigm-flow">
-            <div class="flow-row">
+            <div class="flow-row" data-strand="0">
               <span class="flow-tag">RELATIONAL</span>
               <span class="flow-engine">ANSI SQL Tables, Primary Keys, MVCC</span>
-              <span class="flow-badge">B+Tree Page</span>
+              <span class="flow-badge">B+TREE MMAP</span>
             </div>
-            <div class="flow-row">
+            <div class="flow-row" data-strand="1">
               <span class="flow-tag">DOCUMENTS</span>
               <span class="flow-engine">Schemaless JSON, Nested Field Paths</span>
-              <span class="flow-badge">LoomBSON</span>
+              <span class="flow-badge">BINARY JSON</span>
             </div>
-            <div class="flow-row">
+            <div class="flow-row" data-strand="2">
               <span class="flow-tag">AI VECTORS</span>
               <span class="flow-engine">High-Dimensional Cosine / L2 Nearest Neighbor</span>
-              <span class="flow-badge">HNSW SIMD</span>
+              <span class="flow-badge">AVX-512 VECTORS</span>
             </div>
-            <div class="flow-row">
+            <div class="flow-row" data-strand="3">
               <span class="flow-tag">TIME-SERIES</span>
               <span class="flow-engine">Sensors &amp; Telemetry High-Throughput Streams</span>
-              <span class="flow-badge">Gorilla XOR</span>
+              <span class="flow-badge">GORILLA DELTA</span>
             </div>
-            <div class="flow-row">
+            <div class="flow-row" data-strand="4">
               <span class="flow-tag">GRAPH EDGES</span>
               <span class="flow-engine">Adjacency Traversal &amp; Relationship Mapping</span>
-              <span class="flow-badge">Zero-Copy</span>
+              <span class="flow-badge">ADJACENCY GRAPH</span>
             </div>
           </div>
 
-          <div class="flow-converge">&darr; Unified Storage Virtual Pager &darr;</div>
+          <!-- Dynamic SVG Weaving Pathways -->
+          <div class="weaving-connector">
+            <svg class="weaving-svg" viewBox="0 0 460 48" preserveAspectRatio="none">
+              <path id="stream-0" class="flow-stream-line" d="M 40 0 C 40 24, 230 10, 230 48" fill="none" />
+              <path id="stream-1" class="flow-stream-line" d="M 130 0 C 130 24, 230 18, 230 48" fill="none" />
+              <path id="stream-2" class="flow-stream-line" d="M 230 0 C 230 24, 230 24, 230 48" fill="none" />
+              <path id="stream-3" class="flow-stream-line" d="M 330 0 C 330 24, 230 18, 230 48" fill="none" />
+              <path id="stream-4" class="flow-stream-line" d="M 420 0 C 420 24, 230 10, 230 48" fill="none" />
+            </svg>
+          </div>
 
           <div class="loom-core-target">
             <div>
-              <div style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-muted);">UNIFIED OUTPUT</div>
+              <div style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-muted); text-transform: uppercase;">Unified Virtual Pager</div>
               <strong>Single File Container (.loom)</strong>
             </div>
-            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-amber); font-weight: 700;">&lt; 512 KB RAM</div>
+            <div class="loom-core-spec">&lt; 512 KB RAM</div>
           </div>
         </div>
       </div>
@@ -148,14 +177,14 @@
 
         <div id="terminalBody" class="terminal-body">
           <div class="term-log">
-<div style="color: #58a6ff; font-weight: 700;">[LOOM_DB] Interactive Shell v0.1.0</div>
+<div style="color: #60a5fa; font-weight: 700;">[LOOM_DB] Interactive Shell v0.1.0</div>
 <div style="color: var(--text-muted);">Mounted Container: ./data.loom (Single portable file)
 Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables</span>, or <span style="color: #fff;">.stats</span> for commands.</div>
           </div>
           
           <div class="term-log">
-<div style="color: #1cb58e; font-weight: 700; margin-bottom: 4px;">loom&gt; <span style="color: #fff; font-weight: normal;">SELECT id, topic, notes, cosine_similarity(embedding, [0.12, 0.45, -0.22, 0.81]) AS score FROM memories WHERE topic LIKE '%Rust%' ORDER BY score DESC LIMIT 2;</span></div>
-<div style="color: #8b949e; line-height: 1.5;">+--------+------------------------------+--------------------------+--------+
+<div style="color: var(--accent-amber); font-weight: 700; margin-bottom: 4px;">loom&gt; <span style="color: #fff; font-weight: normal;">SELECT id, topic, notes, cosine_similarity(embedding, [0.12, 0.45, -0.22, 0.81]) AS score FROM memories WHERE topic LIKE '%Rust%' ORDER BY score DESC LIMIT 2;</span></div>
+<div style="color: #94a3b8; line-height: 1.5;">+--------+------------------------------+--------------------------+--------+
 | id     | topic                        | notes                    | score  |
 +--------+------------------------------+--------------------------+--------+
 | mem_01 | High-Performance Rust Storage| Micro profile &lt;512KB RAM | 0.9842 |
@@ -189,17 +218,55 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
     </div>
   </section>
 
-  <!-- 3. Anatomy Section (Single-File .loom Architecture) -->
+  <!-- 3. Anatomy Section (Single-File .loom Architecture & Memory Layout Map) -->
   <section id="architecture" class="features-section">
     <div class="container">
       <div class="section-tag reveal-on-scroll">Zero Sprawl Storage Engine</div>
-      <h2 class="section-heading reveal-on-scroll delay-1">The Architecture of a Single <code>.loom</code> Container</h2>
+      <h2 class="section-heading reveal-on-scroll delay-1">The Anatomy of a Single <code>.loom</code> Container</h2>
       <p class="section-sub reveal-on-scroll delay-2">
-        No directory sprawl. No orphaned WAL files. All paradigms operate within a unified virtual paging container.
+        No directory sprawl. No orphaned WAL files. All five engines operate within a unified 64-bit virtual paging container.
       </p>
 
+      <!-- Interactive Container Layout Map -->
+      <div class="container-layout-map spotlight-card reveal-on-scroll delay-2">
+        <div class="layout-map-title">
+          <span>Virtual Container Binary Allocation Map</span>
+          <span style="color: var(--accent-amber); font-weight: 600;">Direct mmap Offset Paging</span>
+        </div>
+        <div class="layout-map-blocks">
+          <div class="map-block active-block" data-desc="Offset 0x00..0x80: 128-Byte Fixed Pager Inode with xxHash3 integrity checks and magic bytes.">
+            <strong>01 INODE</strong>
+            <span>128B Header</span>
+          </div>
+          <div class="map-block" data-desc="Offset 0x80..4MB: B+Tree Relational Page Allocator for ANSI SQL tables and primary key indices.">
+            <strong>02 RELATIONAL</strong>
+            <span>B+Tree Pages</span>
+          </div>
+          <div class="map-block" data-desc="Offset 4MB..8MB: LoomBSON Schemaless Binary JSON dictionary-encoded document tree nodes.">
+            <strong>03 LOOMBSON</strong>
+            <span>Document Store</span>
+          </div>
+          <div class="map-block" data-desc="Offset 8MB..14MB: High-dimensional HNSW Vector Graph with 8-bit Scalar Quantization (SQ8).">
+            <strong>04 HNSW INDEX</strong>
+            <span>SIMD Vectors</span>
+          </div>
+          <div class="map-block" data-desc="Offset 14MB..18MB: Gorilla XOR float compression blocks for sensor telemetry logs.">
+            <strong>05 TIME-SERIES</strong>
+            <span>Delta Stream</span>
+          </div>
+          <div class="map-block" data-desc="Offset 18MB..20MB: In-Container Circular WAL Ring Buffer with atomic group-commit synchronization.">
+            <strong>06 WAL RING</strong>
+            <span>Circular Buffer</span>
+          </div>
+        </div>
+        <div id="layoutMapDesc" class="layout-map-info">
+          <span>Active Layer: <strong>01 INODE (128B Header)</strong> &mdash; Memory-mapped fixed root inode with xxHash3 integrity check and ring pointers.</span>
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Click any block to inspect</span>
+        </div>
+      </div>
+
       <div class="feature-cards-grid">
-        <div class="craft-card reveal-on-scroll">
+        <div class="craft-card spotlight-card reveal-on-scroll">
           <div>
             <span class="card-num">01 // HEADER &amp; INODE</span>
             <h3 class="card-title">128-Byte Fixed Pager Inode</h3>
@@ -210,7 +277,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
           <div class="card-code">Offset 0x00 .. 0x80 | Magic: 'LOOMDB01'</div>
         </div>
 
-        <div class="craft-card reveal-on-scroll delay-1">
+        <div class="craft-card spotlight-card reveal-on-scroll delay-1">
           <div>
             <span class="card-num">02 // EMBEDDINGS</span>
             <h3 class="card-title">In-Page HNSW Vector Graph</h3>
@@ -221,7 +288,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
           <div class="card-code">75% Memory Reduction via SQ8 Quantization</div>
         </div>
 
-        <div class="craft-card reveal-on-scroll delay-2">
+        <div class="craft-card spotlight-card reveal-on-scroll delay-2">
           <div>
             <span class="card-num">03 // IN-CONTAINER WAL</span>
             <h3 class="card-title">Circular WAL Ring Buffer</h3>
@@ -232,7 +299,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
           <div class="card-code">Group-Commit | CRC32C / xxHash3 Checksums</div>
         </div>
 
-        <div class="craft-card reveal-on-scroll">
+        <div class="craft-card spotlight-card reveal-on-scroll">
           <div>
             <span class="card-num">04 // SCHEMALESS NOVELTY</span>
             <h3 class="card-title">LoomBSON Document Store</h3>
@@ -243,7 +310,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
           <div class="card-code">Query: profile-&gt;'user'-&gt;&gt;'email'</div>
         </div>
 
-        <div class="craft-card reveal-on-scroll delay-1">
+        <div class="craft-card spotlight-card reveal-on-scroll delay-1">
           <div>
             <span class="card-num">05 // BITEMPORAL MVCC</span>
             <h3 class="card-title">Git-for-Data Branching</h3>
@@ -254,7 +321,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
           <div class="card-code">SELECT * FROM orders AS OF '2026-10-31'</div>
         </div>
 
-        <div class="craft-card reveal-on-scroll delay-2">
+        <div class="craft-card spotlight-card reveal-on-scroll delay-2">
           <div>
             <span class="card-num">06 // EDGE &amp; BROWSER</span>
             <h3 class="card-title">WebAssembly Native</h3>
@@ -280,7 +347,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
 
       <div class="fields-grid">
         <!-- Field 1 -->
-        <div class="field-card reveal-on-scroll">
+        <div class="field-card spotlight-card reveal-on-scroll">
           <span class="field-category">AI Agents &amp; Autonomous Systems</span>
           <h3 class="field-heading">Local In-Process Memory &amp; RAG</h3>
           <div class="field-comparison">
@@ -292,7 +359,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
         </div>
 
         <!-- Field 2 -->
-        <div class="field-card reveal-on-scroll delay-1">
+        <div class="field-card spotlight-card reveal-on-scroll delay-1">
           <span class="field-category">Desktop &amp; CLI Developer Tools</span>
           <h3 class="field-heading">Single-File Local State for Tauri &amp; Electron</h3>
           <div class="field-comparison">
@@ -304,7 +371,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
         </div>
 
         <!-- Field 3 -->
-        <div class="field-card reveal-on-scroll delay-2">
+        <div class="field-card spotlight-card reveal-on-scroll delay-2">
           <span class="field-category">Edge Devices, IoT &amp; Micro-Controllers</span>
           <h3 class="field-heading">Ultra-Low Power &amp; Conflict-Free Sync</h3>
           <div class="field-comparison">
@@ -316,7 +383,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
         </div>
 
         <!-- Field 4 -->
-        <div class="field-card reveal-on-scroll">
+        <div class="field-card spotlight-card reveal-on-scroll">
           <span class="field-category">Time-Series &amp; Sensor Telemetry</span>
           <h3 class="field-heading">High-Throughput Append Logs</h3>
           <div class="field-comparison">
@@ -328,7 +395,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
         </div>
 
         <!-- Field 5 -->
-        <div class="field-card reveal-on-scroll delay-1">
+        <div class="field-card spotlight-card reveal-on-scroll delay-1">
           <span class="field-category">Rapid Prototyping &amp; Startups</span>
           <h3 class="field-heading">Fluid Schemas: Start Schemaless, Scale Rigid</h3>
           <div class="field-comparison">
@@ -340,7 +407,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
         </div>
 
         <!-- Field 6 -->
-        <div class="field-card reveal-on-scroll delay-2">
+        <div class="field-card spotlight-card reveal-on-scroll delay-2">
           <span class="field-category">Privacy-First &amp; Multi-Tenant SaaS</span>
           <h3 class="field-heading">Instant Crypto-Shredding</h3>
           <div class="field-comparison">
@@ -354,15 +421,68 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
     </div>
   </section>
 
-  <!-- 5. Benchmark Comparison -->
+  <!-- 5. Benchmark Comparison & Interactive Visualizer -->
   <section id="benchmarks" class="benchmark-section">
     <div class="container">
       <div class="section-tag reveal-on-scroll">Metrics &amp; Architecture</div>
-      <h2 class="section-heading reveal-on-scroll delay-1">Engine specification comparison</h2>
+      <h2 class="section-heading reveal-on-scroll delay-1">Engine specification &amp; comparative benchmarks</h2>
       <p class="section-sub reveal-on-scroll delay-2">
         Engineered from scratch to combine the lightweight embeddability of SQLite with the vector intelligence of modern AI stores.
       </p>
 
+      <!-- Interactive Benchmark Visualizer -->
+      <div class="benchmark-interactive-box spotlight-card reveal-on-scroll delay-2">
+        <div class="bench-tabs">
+          <button class="bench-tab-btn active" data-metric="ram">Idle RAM Footprint (Lower is Better)</button>
+          <button class="bench-tab-btn" data-metric="latency">Cold-Start Query Latency (Lower is Better)</button>
+          <button class="bench-tab-btn" data-metric="size">Binary Weight on Disk (Lower is Better)</button>
+        </div>
+
+        <div id="benchBarsContainer" class="bench-bars-container">
+          <!-- Dynamic Animated Benchmark Rows -->
+          <div class="bench-bar-row">
+            <span class="bench-name loom-name">LoomDB</span>
+            <div class="bench-track">
+              <div class="bench-fill loom-fill" style="width: 3%;"></div>
+            </div>
+            <span class="bench-score loom-score">&lt; 0.48 MB</span>
+          </div>
+
+          <div class="bench-bar-row">
+            <span class="bench-name">SQLite</span>
+            <div class="bench-track">
+              <div class="bench-fill" style="width: 12%;"></div>
+            </div>
+            <span class="bench-score">~ 4.2 MB</span>
+          </div>
+
+          <div class="bench-bar-row">
+            <span class="bench-name">DuckDB</span>
+            <div class="bench-track">
+              <div class="bench-fill" style="width: 38%;"></div>
+            </div>
+            <span class="bench-score">~ 32 MB</span>
+          </div>
+
+          <div class="bench-bar-row">
+            <span class="bench-name">MongoDB</span>
+            <div class="bench-track">
+              <div class="bench-fill" style="width: 95%;"></div>
+            </div>
+            <span class="bench-score">~ 350 MB</span>
+          </div>
+
+          <div class="bench-bar-row">
+            <span class="bench-name">Pinecone</span>
+            <div class="bench-track">
+              <div class="bench-fill" style="width: 65%;"></div>
+            </div>
+            <span class="bench-score">~ 210 MB</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Specification Matrix Table -->
       <div class="table-scroller reveal-on-scroll delay-3">
         <table class="spec-table">
           <thead>
@@ -428,7 +548,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
     </div>
   </section>
 
-  <!-- 6. Developer SDKs & Integration (Replaces the odd simulator) -->
+  <!-- 6. Developer SDKs & Integration -->
   <section id="quickstart" class="quickstart-section">
     <div class="container">
       <div class="section-tag reveal-on-scroll">Developer Integration</div>
@@ -447,7 +567,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
       <div class="sdk-code-box reveal-on-scroll delay-3">
         <div class="sdk-code-header">
           <span id="sdkCodeTitle">main.rs &mdash; Embedded In-Process Zero-Copy Access</span>
-          <span style="color: var(--accent-teal);">ZERO LATENCY</span>
+          <span class="sdk-metric-pill">IN-PROCESS &middot; 0ms IPC</span>
         </div>
         <pre id="sdkCodeBlock" class="sdk-code-content">// Open or create a single-file portable container
 let db = loom_core::LoomDB::open("./app.loom")?;
@@ -475,7 +595,7 @@ println!("Found: {:?}", hits);</pre>
   <!-- 7. Enhanced Download Deck (Placed at Bottom, Full Width & High Contrast) -->
   <section id="downloads" class="download-section">
     <div class="container">
-      <div class="download-deck-wide reveal-on-scroll">
+      <div class="download-deck-wide spotlight-card reveal-on-scroll">
         <div class="deck-header-row">
           <div>
             <div class="detected-label">Selected Platform Setup Package</div>
