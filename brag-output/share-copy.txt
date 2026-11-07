@@ -1,0 +1,5 @@
+LoomDB weaves SQL Relational, JSON Documents, AI Vectors, and Time-Series into a single portable .loom container with sub-512KB idle RAM overhead. 
+
+Zero background daemons, zero external dependencies, and instant AVX-512 SIMD vector queries in under 0.4 milliseconds.
+
+100% free and open-source forever: https://github.com/loomdb/loomdb
