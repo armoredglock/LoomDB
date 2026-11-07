@@ -12,8 +12,9 @@
 
   <!-- Reading Progress Indicator -->
   <div id="scrollProgressBar"></div>
+  <div class="grid-overlay"></div>
 
-  <!-- Editorial Navigation Bar -->
+  <!-- Navigation Bar (Order Matches On-Page Flow) -->
   <nav class="site-nav">
     <div class="container nav-wrap">
       <a href="#" class="brand-unit">
@@ -24,123 +25,103 @@
       <div class="nav-links">
         <a href="#playground" class="nav-item-link">Terminal Shell</a>
         <a href="#architecture" class="nav-item-link">Anatomy</a>
+        <a href="#fields" class="nav-item-link">Why LoomDB</a>
         <a href="#benchmarks" class="nav-item-link">Benchmarks</a>
-        <a href="#installers" class="nav-item-link">Setup Guide</a>
+        <a href="#installer-guide" class="nav-item-link">Setup Guide</a>
         <a href="https://github.com/loomdb/loomdb" target="_blank" class="nav-item-link">GitHub ↗</a>
         <a href="#downloads" class="btn-nav-primary">Get LoomDB</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
+  <!-- 1. Hero Section (Wide 2-Column Space Utilization) -->
   <header class="hero-section">
     <div class="container">
-      <div class="hero-header reveal-on-scroll">
-        <div class="eyebrow">Engine Spec: Micro Profile &middot; Sub-850 KB Stripped &middot; Zero Thread Idle</div>
+      <div class="hero-grid">
+        <!-- Left: Copy & Value Proposition -->
+        <div class="reveal-on-scroll">
+          <div class="eyebrow">Engine Spec: Micro Profile &middot; Sub-850 KB Stripped &middot; Zero Thread Idle</div>
 
-        <h1 class="hero-title">
-          The lightweight database for <em>five paradigms</em> in one container.
-        </h1>
+          <h1 class="hero-title">
+            The lightweight database for <em>five paradigms</em> in one container.
+          </h1>
 
-        <p class="hero-desc">
-          LoomDB eliminates polyglot database sprawl. It weaves 
-          <strong>SQL Relational</strong>, <strong>JSON Documents</strong>, <strong>HNSW AI Vectors</strong>, 
-          and <strong>Time-Series Streams</strong> into a single, portable <code>.loom</code> file. 
-          Zero background threads when idle. Under 512 KB RAM. 100% free and open-source.
-        </p>
+          <p class="hero-desc">
+            LoomDB eliminates polyglot database sprawl. It weaves 
+            <strong>SQL Relational</strong>, <strong>JSON Documents</strong>, <strong>HNSW AI Vectors</strong>, 
+            and <strong>Time-Series Streams</strong> into a single portable <code>.loom</code> file. 
+            Zero background threads when idle. Under 512 KB RAM. 100% free and open-source forever.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#downloads" class="btn-hero-primary">
+              <span>Get Started &middot; Download v0.1.0</span>
+              <span>&rarr;</span>
+            </a>
+            <a href="#playground" class="btn-hero-secondary">
+              <span>Test Interactive Shell</span>
+              <span>&darr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Visual Multi-Model Convergence Diagram -->
+        <div class="hero-visual-card reveal-on-scroll delay-1">
+          <div class="visual-titlebar">
+            <span class="visual-title">Multi-Modal Paradigm Convergence</span>
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-teal);">ZERO SILOS</span>
+          </div>
+
+          <div class="paradigm-flow">
+            <div class="flow-row">
+              <span class="flow-tag">RELATIONAL</span>
+              <span class="flow-engine">ANSI SQL Tables, Primary Keys, MVCC</span>
+              <span class="flow-badge">B+Tree Page</span>
+            </div>
+            <div class="flow-row">
+              <span class="flow-tag">DOCUMENTS</span>
+              <span class="flow-engine">Schemaless JSON, Nested Field Paths</span>
+              <span class="flow-badge">LoomBSON</span>
+            </div>
+            <div class="flow-row">
+              <span class="flow-tag">AI VECTORS</span>
+              <span class="flow-engine">High-Dimensional Cosine / L2 Nearest Neighbor</span>
+              <span class="flow-badge">HNSW SIMD</span>
+            </div>
+            <div class="flow-row">
+              <span class="flow-tag">TIME-SERIES</span>
+              <span class="flow-engine">Sensors &amp; Telemetry High-Throughput Streams</span>
+              <span class="flow-badge">Gorilla XOR</span>
+            </div>
+            <div class="flow-row">
+              <span class="flow-tag">GRAPH EDGES</span>
+              <span class="flow-engine">Adjacency Traversal &amp; Relationship Mapping</span>
+              <span class="flow-badge">Zero-Copy</span>
+            </div>
+          </div>
+
+          <div class="flow-converge">&darr; Unified Storage Virtual Pager &darr;</div>
+
+          <div class="loom-core-target">
+            <div>
+              <div style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-muted);">UNIFIED OUTPUT</div>
+              <strong>Single File Container (.loom)</strong>
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-amber); font-weight: 700;">&lt; 512 KB RAM</div>
+          </div>
+        </div>
       </div>
-
-      <!-- Single File Installer Download Deck -->
-      <section id="downloads" class="download-deck reveal-on-scroll delay-1">
-        <div class="detected-row">
-          <div class="detected-info">
-            <div class="detected-label">Detected Operating System</div>
-            <div id="detectedOSName" class="detected-os-name">Windows (64-bit)</div>
-          </div>
-
-          <div class="download-cta-group">
-            <a id="mainDownloadBtn" href="./downloads/loom-setup.exe" class="btn-primary-download">
-              <span>Download loom-setup.exe</span>
-            </a>
-            <a href="https://github.com/loomdb/loomdb/releases" target="_blank" class="btn-secondary-link">
-              <span>Release Notes &amp; Verification &rarr;</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Terminal Quick Install -->
-        <div style="margin-bottom: 24px;">
-          <div style="font-size: 0.76rem; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">
-            Or Install via Terminal Command:
-          </div>
-          <div class="quick-install-box">
-            <code id="quickInstallCmd" class="command-snippet">irm https://loomdb.dev/install.ps1 | iex</code>
-            <button class="btn-copy-cmd" data-target="quickInstallCmd">Copy</button>
-          </div>
-        </div>
-
-        <!-- Single Standalone Installer Cards -->
-        <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">
-          Standalone Single-File Installers by Platform:
-        </div>
-        <div class="os-grid">
-          <!-- Windows Single EXE -->
-          <a id="os-win" href="./downloads/loom-setup.exe" class="os-card active-match">
-            <div>
-              <div class="os-card-header">
-                <span class="os-card-title">Windows</span>
-                <span class="os-card-badge">Single .EXE</span>
-              </div>
-              <p class="os-card-desc">Self-contained executable wizard. Automatically installs LoomDB, configures PATH, and sets up service.</p>
-            </div>
-            <div class="os-card-action">
-              <span>Download loom-setup.exe</span>
-              <span>&rarr;</span>
-            </div>
-          </a>
-
-          <!-- macOS Single Installer -->
-          <a id="os-mac-arm" href="./downloads/loom-setup-macos.sh" class="os-card">
-            <div>
-              <div class="os-card-header">
-                <span class="os-card-title">macOS</span>
-                <span class="os-card-badge">Apple Silicon &amp; Intel</span>
-              </div>
-              <p class="os-card-desc">Single standalone installer script. Installs binary, configures zsh PATH, and registers launchd daemon.</p>
-            </div>
-            <div class="os-card-action">
-              <span>Download loom-setup-macos.sh</span>
-              <span>&rarr;</span>
-            </div>
-          </a>
-
-          <!-- Linux Single Installer -->
-          <a id="os-linux-x64" href="./downloads/loom-setup-linux.sh" class="os-card">
-            <div>
-              <div class="os-card-header">
-                <span class="os-card-title">Linux</span>
-                <span class="os-card-badge">x86_64 &amp; ARM64</span>
-              </div>
-              <p class="os-card-desc">Single standalone installer. Installs binary to path, updates bashrc/profile, and registers systemd unit.</p>
-            </div>
-            <div class="os-card-action">
-              <span>Download loom-setup-linux.sh</span>
-              <span>&rarr;</span>
-            </div>
-          </a>
-        </div>
-      </section>
     </div>
   </header>
 
-  <!-- Interactive Terminal Section -->
+  <!-- 2. Terminal Shell Section (With Sandbox Quota Limit) -->
   <section id="playground" class="playground-section">
     <div class="container">
       <div class="section-tag reveal-on-scroll">Command Line Execution</div>
       <h2 class="section-heading reveal-on-scroll delay-1">Interactive terminal shell. Run queries live.</h2>
       <p class="section-sub reveal-on-scroll delay-2">
-        Just like typing <code>sqlcmd</code> or <code>sqlite3</code>, type <code>loom</code> in your command prompt 
-        to enter the database workspace. Test real queries below:
+        Type <code>loom</code> in your command prompt to enter the database workspace. Test the interactive sandbox below. 
+        (Live web sandbox is limited to 3 test queries &mdash; download LoomDB for unrestricted local execution.)
       </p>
 
       <div class="terminal-wrapper reveal-on-scroll delay-3">
@@ -151,7 +132,7 @@
             <div class="term-dot"></div>
           </div>
           <div class="terminal-title">loom &mdash; ./data.loom [Micro Profile: &lt;512KB RAM]</div>
-          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-teal);">READY</div>
+          <div id="sandboxQuotaBadge" class="sandbox-quota-badge">Sandbox Usage: 0 / 3 queries</div>
         </div>
 
         <div class="terminal-presets">
@@ -181,17 +162,31 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
           </div>
         </div>
 
-        <div style="background: #11141b; padding: 12px 24px; border-top: 1px solid var(--border-subtle);">
+        <!-- Terminal Input Prompt -->
+        <div id="terminalPromptArea" style="background: #11141b; padding: 12px 24px; border-top: 1px solid var(--border-subtle);">
           <div class="term-prompt-line">
             <span class="term-prompt">loom&gt;</span>
-            <input id="termInput" type="text" class="term-input" placeholder="Type a SQL query and press Enter (or type .help)..." autocomplete="off">
+            <input id="termInput" type="text" class="term-input" placeholder="Type a SQL query or command (.help, .tables) and press Enter..." autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Sandbox Limit Download Lock Card -->
+        <div id="terminalGateCard" class="terminal-gate-card">
+          <div class="gate-title">[DEMO LIMIT REACHED &middot; 3/3 QUERIES USED]</div>
+          <div class="gate-desc">
+            You have reached the interactive web sandbox limit. To build real projects with unlimited queries, 
+            local ACID persistence, HNSW vector indexing, and zero network latency, download LoomDB directly to your computer.
+          </div>
+          <div class="gate-actions">
+            <a href="#downloads" class="btn-gate-download">Download LoomDB Installer &rarr;</a>
+            <button id="resetDemoBtn" class="btn-gate-reset">Reset Demo</button>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Single File Anatomy Section -->
+  <!-- 3. Anatomy Section (Single-File .loom Architecture) -->
   <section id="architecture" class="features-section">
     <div class="container">
       <div class="section-tag reveal-on-scroll">Zero Sprawl Storage Engine</div>
@@ -202,106 +197,161 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
 
       <div class="feature-cards-grid">
         <div class="craft-card reveal-on-scroll">
-          <span class="card-num">01 // HEADER &amp; INODE</span>
-          <h3 class="card-title">128-Byte Fixed Pager Inode</h3>
-          <p class="card-desc">
-            Directly memory-mapped via <code>mmap</code>. Houses magic bytes, page size configuration, root catalog pointers, and ring-buffer WAL markers with xxHash3 integrity checks.
-          </p>
+          <div>
+            <span class="card-num">01 // HEADER &amp; INODE</span>
+            <h3 class="card-title">128-Byte Fixed Pager Inode</h3>
+            <p class="card-desc">
+              Directly memory-mapped via <code>mmap</code>. Houses magic bytes, page size configuration, root catalog pointers, and ring-buffer WAL markers with xxHash3 integrity checks.
+            </p>
+          </div>
           <div class="card-code">Offset 0x00 .. 0x80 | Magic: 'LOOMDB01'</div>
         </div>
 
         <div class="craft-card reveal-on-scroll delay-1">
-          <span class="card-num">02 // EMBEDDINGS</span>
-          <h3 class="card-title">In-Page HNSW Vector Graph</h3>
-          <p class="card-desc">
-            Stores high-dimensional vectors with 8-bit Scalar Quantization (SQ8). Traversed with AVX-512/NEON SIMD alongside relational filters in a single atomic pass.
-          </p>
+          <div>
+            <span class="card-num">02 // EMBEDDINGS</span>
+            <h3 class="card-title">In-Page HNSW Vector Graph</h3>
+            <p class="card-desc">
+              Stores high-dimensional vectors with 8-bit Scalar Quantization (SQ8). Traversed with AVX-512/NEON SIMD alongside relational filters in a single atomic pass.
+            </p>
+          </div>
           <div class="card-code">75% Memory Reduction via SQ8 Quantization</div>
         </div>
 
         <div class="craft-card reveal-on-scroll delay-2">
-          <span class="card-num">03 // IN-CONTAINER WAL</span>
-          <h3 class="card-title">Circular WAL Ring Buffer</h3>
-          <p class="card-desc">
-            Append-only circular write buffer allocated directly inside the <code>.loom</code> file. Zero external log files to manage or accidentally lose during crash recovery.
-          </p>
+          <div>
+            <span class="card-num">03 // IN-CONTAINER WAL</span>
+            <h3 class="card-title">Circular WAL Ring Buffer</h3>
+            <p class="card-desc">
+              Append-only circular write buffer allocated directly inside the <code>.loom</code> file. Zero external log files to manage or accidentally lose during crash recovery.
+            </p>
+          </div>
           <div class="card-code">Group-Commit | CRC32C / xxHash3 Checksums</div>
         </div>
 
         <div class="craft-card reveal-on-scroll">
-          <span class="card-num">04 // SCHEMALESS NOVELTY</span>
-          <h3 class="card-title">LoomBSON Document Store</h3>
-          <p class="card-desc">
-            Dictionary-encoded binary JSON. Project nested fields directly from disk blocks without deserializing entire parent document trees.
-          </p>
+          <div>
+            <span class="card-num">04 // SCHEMALESS NOVELTY</span>
+            <h3 class="card-title">LoomBSON Document Store</h3>
+            <p class="card-desc">
+              Dictionary-encoded binary JSON. Project nested fields directly from disk blocks without deserializing entire parent document trees.
+            </p>
+          </div>
           <div class="card-code">Query: profile-&gt;'user'-&gt;&gt;'email'</div>
         </div>
 
         <div class="craft-card reveal-on-scroll delay-1">
-          <span class="card-num">05 // BITEMPORAL MVCC</span>
-          <h3 class="card-title">Git-for-Data Branching</h3>
-          <p class="card-desc">
-            Zero-copy snapshot branching and instantaneous historical queries. Read historical database snapshots with <code>AS OF TIMESTAMP</code> with zero performance penalty.
-          </p>
+          <div>
+            <span class="card-num">05 // BITEMPORAL MVCC</span>
+            <h3 class="card-title">Git-for-Data Branching</h3>
+            <p class="card-desc">
+              Zero-copy snapshot branching and instantaneous historical queries. Read historical database snapshots with <code>AS OF TIMESTAMP</code> with zero performance penalty.
+            </p>
+          </div>
           <div class="card-code">SELECT * FROM orders AS OF '2026-10-31'</div>
         </div>
 
         <div class="craft-card reveal-on-scroll delay-2">
-          <span class="card-num">06 // EDGE &amp; BROWSER</span>
-          <h3 class="card-title">WebAssembly Native</h3>
-          <p class="card-desc">
-            Compiles cleanly to <code>wasm32-unknown-unknown</code> with browser Origin Private File System (OPFS) backing. Run production-grade local databases inside any browser tab.
-          </p>
+          <div>
+            <span class="card-num">06 // EDGE &amp; BROWSER</span>
+            <h3 class="card-title">WebAssembly Native</h3>
+            <p class="card-desc">
+              Compiles cleanly to <code>wasm32-unknown-unknown</code> with browser Origin Private File System (OPFS) backing. Run production-grade local databases inside any browser tab.
+            </p>
+          </div>
           <div class="card-code">OPFS Synchronous Access Handles</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Step-by-Step Installation Wizard Preview -->
-  <section id="installers" class="wizard-section">
+  <!-- 4. Why LoomDB Across Fields (Diverse Engineering Use Cases) -->
+  <section id="fields" class="fields-section">
     <div class="container">
-      <div class="section-tag reveal-on-scroll">Guided Setup</div>
-      <h2 class="section-heading reveal-on-scroll delay-1">Five-stage guided installer workflow</h2>
+      <div class="section-tag reveal-on-scroll">Industry Applicability</div>
+      <h2 class="section-heading reveal-on-scroll delay-1">Why LoomDB outperforms legacy databases in real projects</h2>
       <p class="section-sub reveal-on-scroll delay-2">
-        The standalone installer handles everything in five straightforward stages.
+        Existing databases force you into silos: Postgres for tables, Mongo for JSON, Pinecone for vectors, Influx for telemetry. 
+        Here is how LoomDB transforms distinct engineering domains:
       </p>
 
-      <div class="wizard-steps">
-        <div class="wizard-step-card reveal-on-scroll">
-          <div class="step-indicator">STAGE 01</div>
-          <h3 class="step-title">Service Info</h3>
-          <p class="step-desc">Detailed overview of features, ports, and micro memory configuration.</p>
+      <div class="fields-grid">
+        <!-- Field 1 -->
+        <div class="field-card reveal-on-scroll">
+          <span class="field-category">AI Agents &amp; Autonomous Systems</span>
+          <h3 class="field-heading">Local In-Process Memory &amp; RAG</h3>
+          <div class="field-comparison">
+            <strong>The Problem:</strong> Pinecone and Milvus require network round-trips, credit billing, and heavy distributed infrastructure that breaks when offline.
+          </div>
+          <p class="field-advantage">
+            LoomDB embeds high-dimensional HNSW vector search directly inside your AI agent process in under 512 KB RAM. Zero network latency, instant semantic cosine retrieval, and zero cloud dependency.
+          </p>
         </div>
 
-        <div class="wizard-step-card reveal-on-scroll delay-1">
-          <div class="step-indicator">STAGE 02</div>
-          <h3 class="step-title">User Agreement</h3>
-          <p class="step-desc">Confirmation of the permissive Apache-2.0 / MIT open-source license.</p>
+        <!-- Field 2 -->
+        <div class="field-card reveal-on-scroll delay-1">
+          <span class="field-category">Desktop &amp; CLI Developer Tools</span>
+          <h3 class="field-heading">Single-File Local State for Tauri &amp; Electron</h3>
+          <div class="field-comparison">
+            <strong>The Problem:</strong> SQLite lacks native vector search, JSON querying is clunky, and it has no real-time push subscription capabilities.
+          </div>
+          <p class="field-advantage">
+            LoomDB gives desktop tools and CLI utilities a single-file portable database that natively understands JSON documents, vector embeddings, and real-time live push queries via CDC.
+          </p>
         </div>
 
-        <div class="wizard-step-card reveal-on-scroll delay-2">
-          <div class="step-indicator">STAGE 03</div>
-          <h3 class="step-title">Directory Picker</h3>
-          <p class="step-desc">Select custom directory or accept standard OS location (e.g. LocalAppData or /usr/local/bin).</p>
+        <!-- Field 3 -->
+        <div class="field-card reveal-on-scroll delay-2">
+          <span class="field-category">Edge Devices, IoT &amp; Micro-Controllers</span>
+          <h3 class="field-heading">Ultra-Low Power &amp; Conflict-Free Sync</h3>
+          <div class="field-comparison">
+            <strong>The Problem:</strong> Traditional database daemons constantly consume background threads, idle CPU cycles, and hundreds of megabytes of RAM.
+          </div>
+          <p class="field-advantage">
+            LoomDB's Micro Profile consumes less than 512 KB RAM and zero CPU threads when idle. Built-in Delta-CRDTs allow edge nodes to write offline and automatically sync when connectivity returns.
+          </p>
         </div>
 
-        <div class="wizard-step-card reveal-on-scroll delay-2">
-          <div class="step-indicator">STAGE 04</div>
-          <h3 class="step-title">CLI PATH Setup</h3>
-          <p class="step-desc">Automatically adds <code>loom</code> to system environment variable so you can run it anywhere.</p>
+        <!-- Field 4 -->
+        <div class="field-card reveal-on-scroll">
+          <span class="field-category">Time-Series &amp; Sensor Telemetry</span>
+          <h3 class="field-heading">High-Throughput Append Logs</h3>
+          <div class="field-comparison">
+            <strong>The Problem:</strong> Relational databases suffer severe write amplification and index degradation when ingesting millions of telemetry events per hour.
+          </div>
+          <p class="field-advantage">
+            LoomDB combines an in-container circular WAL with Gorilla XOR float compression, reducing numeric metric storage by 85% and achieving sequential NVMe write throughput.
+          </p>
         </div>
 
-        <div class="wizard-step-card reveal-on-scroll delay-3">
-          <div class="step-indicator">STAGE 05</div>
-          <h3 class="step-title">Service &amp; Run</h3>
-          <p class="step-desc">Optional registration as a Windows Service / systemd unit, followed by immediate REPL launch.</p>
+        <!-- Field 5 -->
+        <div class="field-card reveal-on-scroll delay-1">
+          <span class="field-category">Rapid Prototyping &amp; Startups</span>
+          <h3 class="field-heading">Fluid Schemas: Start Schemaless, Scale Rigid</h3>
+          <div class="field-comparison">
+            <strong>The Problem:</strong> Starting with MongoDB leads to eventual data integrity debt; starting with Postgres requires tedious migrations before product-market fit.
+          </div>
+          <p class="field-advantage">
+            Start 100% schemaless with LoomBSON collections. As your models mature, add strict relational schema enforcement contracts dynamically without downtime or database migration rewrites.
+          </p>
+        </div>
+
+        <!-- Field 6 -->
+        <div class="field-card reveal-on-scroll delay-2">
+          <span class="field-category">Privacy-First &amp; Multi-Tenant SaaS</span>
+          <h3 class="field-heading">Instant Crypto-Shredding</h3>
+          <div class="field-comparison">
+            <strong>The Problem:</strong> Complying with GDPR "Right to be Forgotten" requires costly table vacuums and complex cascading deletion queries across all historical backups.
+          </div>
+          <p class="field-advantage">
+            LoomDB encrypts data blocks per tenant. Deleting a tenant's cryptographic key immediately renders all their historical data unrecoverable across all SSTables and backups with zero CPU vacuum overhead.
+          </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Benchmark Comparison -->
+  <!-- 5. Benchmark Comparison -->
   <section id="benchmarks" class="benchmark-section">
     <div class="container">
       <div class="section-tag reveal-on-scroll">Metrics &amp; Architecture</div>
@@ -375,6 +425,208 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
     </div>
   </section>
 
+  <!-- 6. Graphical Installer Dialog Box Visualizer -->
+  <section id="installer-guide" class="wizard-section">
+    <div class="container">
+      <div class="section-tag reveal-on-scroll">Guided Setup Visualizer</div>
+      <h2 class="section-heading reveal-on-scroll delay-1">Interactive installer dialog simulation</h2>
+      <p class="section-sub reveal-on-scroll delay-2">
+        See how the standalone single-file installer works. Click the stages on the left or use the Next button to preview the setup workflow:
+      </p>
+
+      <div class="installer-dialog-window reveal-on-scroll delay-3">
+        <div class="dialog-window-header">
+          <div class="terminal-controls">
+            <div class="term-dot"></div>
+            <div class="term-dot"></div>
+            <div class="term-dot"></div>
+          </div>
+          <div class="dialog-window-title">LoomDB Setup Wizard &mdash; Version 0.1.0</div>
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-amber);">STANDALONE .EXE</div>
+        </div>
+
+        <div class="dialog-window-body">
+          <!-- Dialog Sidebar Tabs -->
+          <div class="dialog-sidebar">
+            <div class="dialog-step-tab active" data-step="0">1. Welcome &amp; Spec</div>
+            <div class="dialog-step-tab" data-step="1">2. License Agreement</div>
+            <div class="dialog-step-tab" data-step="2">3. Destination Path</div>
+            <div class="dialog-step-tab" data-step="3">4. Environment PATH</div>
+            <div class="dialog-step-tab" data-step="4">5. Background Service</div>
+            <div class="dialog-step-tab" data-step="5">6. Ready to Weave</div>
+          </div>
+
+          <!-- Dialog Content Pane -->
+          <div class="dialog-content-pane">
+            <!-- Stage 0: Welcome -->
+            <div class="dialog-stage active" id="stage0">
+              <h3 class="dialog-stage-title">Welcome to LoomDB Setup</h3>
+              <p class="dialog-stage-text">
+                This wizard will configure LoomDB on your system as both a zero-latency local library and a CLI command available from any terminal workspace.
+              </p>
+              <div style="background: var(--bg-carbon); border: 1px solid var(--border-subtle); padding: 14px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary);">
+                <div>&bull; Micro Memory Profile: &lt;512 KB Idle RAM</div>
+                <div>&bull; Multi-Modal Engine: SQL + JSON + HNSW Vectors + Time-Series</div>
+                <div>&bull; Single File Architecture: All storage encapsulated in .loom</div>
+              </div>
+            </div>
+
+            <!-- Stage 1: License -->
+            <div class="dialog-stage" id="stage1">
+              <h3 class="dialog-stage-title">Open Source License Agreement</h3>
+              <p class="dialog-stage-text">
+                LoomDB is distributed under the permissive dual MIT and Apache-2.0 licenses. 
+                You are free to use, modify, embed, and redistribute LoomDB in both personal and commercial applications with zero fees.
+              </p>
+              <div style="background: var(--bg-carbon); border: 1px solid var(--border-subtle); padding: 14px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-teal);">
+                [x] I accept the terms of the license agreement and wish to proceed.
+              </div>
+            </div>
+
+            <!-- Stage 2: Destination -->
+            <div class="dialog-stage" id="stage2">
+              <h3 class="dialog-stage-title">Installation Destination</h3>
+              <p class="dialog-stage-text">
+                Choose the directory where the single-file binary will be placed. The installer defaults to your user profile directory so administrator rights are not required.
+              </p>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="text" readonly value="C:\Users\User\AppData\Local\LoomDB" style="flex: 1; background: var(--bg-carbon); border: 1px solid var(--border-active); color: #fff; padding: 10px 14px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.85rem;">
+                <button style="background: var(--bg-elevated); border: 1px solid var(--border-active); color: var(--text-secondary); padding: 10px 16px; border-radius: 4px; font-size: 0.82rem; cursor: pointer;">Browse...</button>
+              </div>
+            </div>
+
+            <!-- Stage 3: PATH -->
+            <div class="dialog-stage" id="stage3">
+              <h3 class="dialog-stage-title">System Environment PATH Integration</h3>
+              <p class="dialog-stage-text">
+                The setup wizard automatically appends LoomDB to your User PATH variable. 
+                This allows you to type <code>loom</code> in any Command Prompt, PowerShell, or bash terminal to immediately enter the database workspace.
+              </p>
+              <div style="background: var(--bg-carbon); border: 1px solid var(--border-subtle); padding: 14px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-cyan);">
+                &gt; loom --version &rarr; loom 0.1.0 [Ready]
+              </div>
+            </div>
+
+            <!-- Stage 4: Service -->
+            <div class="dialog-stage" id="stage4">
+              <h3 class="dialog-stage-title">Windows Background Service Option</h3>
+              <p class="dialog-stage-text">
+                Optionally register LoomDB as an automatic OS service (Windows Service / systemd unit). When active, applications and the embedded Web Studio can connect at <code>127.0.0.1:8484</code>.
+              </p>
+              <div style="background: var(--bg-carbon); border: 1px solid var(--border-subtle); padding: 14px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-secondary);">
+                [x] Register LoomDB as automatic Windows background service (Port 8484)
+              </div>
+            </div>
+
+            <!-- Stage 5: Ready -->
+            <div class="dialog-stage" id="stage5">
+              <h3 class="dialog-stage-title">Installation Complete</h3>
+              <p class="dialog-stage-text">
+                LoomDB has been successfully installed. You can now launch the interactive shell directly from your terminal or open the Web Studio in your browser.
+              </p>
+              <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-teal);">
+                Command: loom &rarr; Drops directly into interactive prompt.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dialog Footer Controls -->
+        <div class="dialog-window-footer">
+          <button id="dialogBackBtn" class="dialog-nav-btn">&lt; Back</button>
+          <div style="display: flex; gap: 10px;">
+            <button id="dialogNextBtn" class="dialog-nav-btn primary">Next &gt;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Download & Setup Deck (Placed at Bottom, Full Width) -->
+  <section id="downloads" class="download-section">
+    <div class="container">
+      <div class="download-deck-wide reveal-on-scroll">
+        <div class="deck-header-row">
+          <div>
+            <div class="detected-label">Selected Installation Platform</div>
+            <div id="detectedOSName" class="detected-platform-title">Windows (64-bit)</div>
+          </div>
+
+          <div class="download-cta-group">
+            <a id="mainDownloadBtn" href="./downloads/loom-setup.exe" class="btn-primary-download">
+              <span>Download loom-setup.exe</span>
+            </a>
+            <a href="https://github.com/loomdb/loomdb/releases" target="_blank" class="btn-secondary-link">
+              <span>Release Notes &amp; Source ↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Terminal Quick Install Command Box (Dynamically Synchronized) -->
+        <div style="margin-bottom: 32px;">
+          <div style="font-size: 0.76rem; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">
+            Terminal Command for Selected Platform:
+          </div>
+          <div class="quick-install-box">
+            <code id="quickInstallCmd" class="command-snippet">irm https://loomdb.dev/install.ps1 | iex</code>
+            <button class="btn-copy-cmd" data-target="quickInstallCmd">Copy</button>
+          </div>
+        </div>
+
+        <!-- Standalone Single-File Installers by Platform (Interactive Switcher) -->
+        <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">
+          Choose Machine Compatible Installer:
+        </div>
+        <div class="os-grid-wide">
+          <!-- Windows Card -->
+          <div id="os-win" class="os-card-wide active-match" data-os="win">
+            <div>
+              <div class="os-card-header">
+                <span class="os-card-title">Windows</span>
+                <span class="os-card-badge">Single .EXE</span>
+              </div>
+              <p class="os-card-desc">Self-contained executable wizard. Automatically configures LoomDB, updates PATH, and optionally installs service.</p>
+            </div>
+            <div class="os-card-action">
+              <span>Select loom-setup.exe</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+
+          <!-- macOS Card -->
+          <div id="os-mac-arm" class="os-card-wide" data-os="mac">
+            <div>
+              <div class="os-card-header">
+                <span class="os-card-title">macOS</span>
+                <span class="os-card-badge">Apple Silicon &amp; Intel</span>
+              </div>
+              <p class="os-card-desc">Single standalone installer script. Installs binary, configures zsh PATH, and registers launchd daemon.</p>
+            </div>
+            <div class="os-card-action">
+              <span>Select loom-setup-macos.sh</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+
+          <!-- Linux Card -->
+          <div id="os-linux-x64" class="os-card-wide" data-os="linux">
+            <div>
+              <div class="os-card-header">
+                <span class="os-card-title">Linux</span>
+                <span class="os-card-badge">x86_64 &amp; ARM64</span>
+              </div>
+              <p class="os-card-desc">Single standalone installer. Installs binary to path, updates bashrc/profile, and registers systemd unit.</p>
+            </div>
+            <div class="os-card-action">
+              <span>Select loom-setup-linux.sh</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer>
     <div class="container footer-wrap">
@@ -387,10 +639,12 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
       </div>
 
       <div class="footer-links">
-        <a href="#downloads" class="footer-link">Download</a>
         <a href="#playground" class="footer-link">Terminal</a>
+        <a href="#architecture" class="footer-link">Anatomy</a>
+        <a href="#fields" class="footer-link">Why LoomDB</a>
+        <a href="#benchmarks" class="footer-link">Benchmarks</a>
+        <a href="#downloads" class="footer-link">Download</a>
         <a href="https://github.com/loomdb/loomdb" target="_blank" class="footer-link">GitHub</a>
-        <a href="https://github.com/loomdb/loomdb/blob/main/LICENSE" target="_blank" class="footer-link">License</a>
       </div>
     </div>
   </footer>

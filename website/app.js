@@ -1,16 +1,16 @@
 // ==============================================================================
-// LoomDB Client Runtime & Motion Engine
-// Strict Rule: Zero Emojis. Clean Technical Telemetry & Motion.
+// LoomDB Client Runtime & Interactive Motion Engine
 // ==============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
-  initOSDetection();
-  initTerminal();
+  initOSSelection();
+  initTerminalWithQuota();
+  initInstallerDialog();
   initCopyButtons();
 });
 
-// 1. Scroll-Driven Progress Bar & Intersection Reveal Animations
+// 1. Reading Progress Bar & Intersection Reveal Animations
 function initScrollAnimations() {
   const progressBar = document.getElementById('scrollProgressBar');
 
@@ -23,10 +23,9 @@ function initScrollAnimations() {
     }
   }, { passive: true });
 
-  // Intersection Observer for staggered scroll reveals
   const revealElements = document.querySelectorAll('.reveal-on-scroll');
   const observerOptions = {
-    threshold: 0.12,
+    threshold: 0.1,
     rootMargin: '0px 0px -40px 0px'
   };
 
@@ -42,49 +41,75 @@ function initScrollAnimations() {
   revealElements.forEach(el => revealObserver.observe(el));
 }
 
-// 2. OS & Architecture Detection
-function initOSDetection() {
-  const ua = window.navigator.userAgent.toLowerCase();
-  const platform = window.navigator.platform ? window.navigator.platform.toLowerCase() : '';
-
-  let detectedOS = 'Windows (64-bit)';
-  let filename = 'loom-setup.exe';
-  let installCmd = 'irm https://loomdb.dev/install.ps1 | iex';
-  let activeCardId = 'os-win';
-
-  if (ua.includes('mac') || platform.includes('mac')) {
-    detectedOS = 'macOS';
-    filename = 'loom-setup-macos.sh';
-    activeCardId = 'os-mac-arm';
-    installCmd = 'curl -fsSL https://loomdb.dev/install.sh | sh';
-  } else if (ua.includes('linux') || platform.includes('linux')) {
-    detectedOS = 'Linux';
-    filename = 'loom-setup-linux.sh';
-    activeCardId = 'os-linux-x64';
-    installCmd = 'curl -fsSL https://loomdb.dev/install.sh | sh';
+// 2. Platform Detection & Interactive OS Card Switching
+const PLATFORM_CONFIGS = {
+  win: {
+    name: 'Windows (64-bit)',
+    filename: 'loom-setup.exe',
+    cmd: 'irm https://loomdb.dev/install.ps1 | iex',
+    cardId: 'os-win',
+  },
+  mac: {
+    name: 'macOS (Apple Silicon & Intel)',
+    filename: 'loom-setup-macos.sh',
+    cmd: 'curl -fsSL https://loomdb.dev/install.sh | sh',
+    cardId: 'os-mac-arm',
+  },
+  linux: {
+    name: 'Linux (x86_64 & ARM64)',
+    filename: 'loom-setup-linux.sh',
+    cmd: 'curl -fsSL https://loomdb.dev/install.sh | sh',
+    cardId: 'os-linux-x64',
   }
+};
 
-  // Update UI Elements
+function setPlatform(key) {
+  const cfg = PLATFORM_CONFIGS[key] || PLATFORM_CONFIGS.win;
+
   const osLabel = document.getElementById('detectedOSName');
   const mainBtn = document.getElementById('mainDownloadBtn');
   const cmdElem = document.getElementById('quickInstallCmd');
 
-  if (osLabel) osLabel.textContent = detectedOS;
+  if (osLabel) osLabel.textContent = cfg.name;
   if (mainBtn) {
-    mainBtn.href = `./downloads/${filename}`;
-    mainBtn.innerHTML = `<span>Download ${filename}</span>`;
+    mainBtn.href = `./downloads/${cfg.filename}`;
+    mainBtn.innerHTML = `<span>Download ${cfg.filename}</span>`;
   }
-  if (cmdElem) cmdElem.textContent = installCmd;
+  if (cmdElem) cmdElem.textContent = cfg.cmd;
 
-  // Highlight active matching card
-  const activeCard = document.getElementById(activeCardId);
-  if (activeCard) {
-    document.querySelectorAll('.os-card').forEach(c => c.classList.remove('active-match'));
-    activeCard.classList.add('active-match');
-  }
+  // Highlight selected card
+  document.querySelectorAll('.os-card-wide').forEach(c => c.classList.remove('active-match'));
+  const activeCard = document.getElementById(cfg.cardId);
+  if (activeCard) activeCard.classList.add('active-match');
 }
 
-// 3. Interactive Terminal Emulator (Zero Emojis)
+function initOSSelection() {
+  const ua = window.navigator.userAgent.toLowerCase();
+  const platform = window.navigator.platform ? window.navigator.platform.toLowerCase() : '';
+
+  let initialKey = 'win';
+  if (ua.includes('mac') || platform.includes('mac')) {
+    initialKey = 'mac';
+  } else if (ua.includes('linux') || platform.includes('linux')) {
+    initialKey = 'linux';
+  }
+
+  setPlatform(initialKey);
+
+  // Attach click listeners to all OS cards
+  document.querySelectorAll('.os-card-wide').forEach(card => {
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+      const osKey = card.getAttribute('data-os');
+      if (osKey) setPlatform(osKey);
+    });
+  });
+}
+
+// 3. Terminal Emulator with Sandbox Quota Limit (Max 3 Queries)
+const MAX_SANDBOX_QUERIES = 3;
+let sandboxQueryCount = 0;
+
 const terminalPresets = {
   vector: {
     query: `SELECT id, topic, notes, 
@@ -136,19 +161,44 @@ Watching WAL commits with zero polling overhead.`
   }
 };
 
-function initTerminal() {
-  const terminalBody = document.getElementById('terminalBody');
+function updateSandboxBadge() {
+  const badge = document.getElementById('sandboxQuotaBadge');
+  if (badge) {
+    badge.textContent = `Sandbox Usage: ${sandboxQueryCount} / ${MAX_SANDBOX_QUERIES} queries`;
+  }
+
+  if (sandboxQueryCount >= MAX_SANDBOX_QUERIES) {
+    const gateCard = document.getElementById('terminalGateCard');
+    const promptArea = document.getElementById('terminalPromptArea');
+    if (gateCard) gateCard.classList.add('active');
+    if (promptArea) promptArea.style.display = 'none';
+
+    runTerminalQuery(
+      "-- DEMO NOTICE",
+      `[SANDBOX LIMIT REACHED: 3/3 QUERIES USED]
+To unlock unlimited local queries, full WAL persistence, HNSW vector indexing, 
+and local ACID storage, download and run LoomDB directly on your system.`
+    );
+  }
+}
+
+function initTerminalWithQuota() {
   const termInput = document.getElementById('termInput');
   const presetChips = document.querySelectorAll('.preset-chip');
+  const resetBtn = document.getElementById('resetDemoBtn');
 
   presetChips.forEach(chip => {
     chip.addEventListener('click', () => {
+      if (sandboxQueryCount >= MAX_SANDBOX_QUERIES) return;
+
       presetChips.forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
       const presetKey = chip.getAttribute('data-preset');
       const preset = terminalPresets[presetKey];
       if (preset) {
+        sandboxQueryCount++;
         runTerminalQuery(preset.query, preset.output);
+        updateSandboxBadge();
       }
     });
   });
@@ -158,10 +208,28 @@ function initTerminal() {
       if (e.key === 'Enter') {
         const val = termInput.value.trim();
         if (val) {
-          handleManualInput(val);
           termInput.value = '';
+          if (sandboxQueryCount >= MAX_SANDBOX_QUERIES) {
+            updateSandboxBadge();
+            return;
+          }
+          sandboxQueryCount++;
+          handleManualInput(val);
+          updateSandboxBadge();
         }
       }
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      sandboxQueryCount = 0;
+      updateSandboxBadge();
+      const gateCard = document.getElementById('terminalGateCard');
+      const promptArea = document.getElementById('terminalPromptArea');
+      if (gateCard) gateCard.classList.remove('active');
+      if (promptArea) promptArea.style.display = 'block';
+      if (termInput) termInput.focus();
     });
   }
 }
@@ -172,7 +240,7 @@ function runTerminalQuery(query, outputText) {
   logDiv.className = 'term-log';
 
   logDiv.innerHTML = `
-<div style="color: #1cd8a4; font-weight: 700; margin-bottom: 4px;">loom&gt; <span style="color: #fff; font-weight: normal;">${escapeHtml(query)}</span></div>
+<div style="color: #1cb58e; font-weight: 700; margin-bottom: 4px;">loom&gt; <span style="color: #fff; font-weight: normal;">${escapeHtml(query)}</span></div>
 <div style="color: #8b949e; line-height: 1.5;">${escapeHtml(outputText)}</div>
 `;
   terminalBody.appendChild(logDiv);
@@ -181,26 +249,21 @@ function runTerminalQuery(query, outputText) {
 
 function handleManualInput(input) {
   if (input === '.help') {
-    runTerminalQuery(input, `LoomDB Commands:
-  .tables     List tables & collections in single .loom file
+    runTerminalQuery(input, `LoomDB Interactive Shell Commands:
+  .tables     List tables & collections in container
+  .describe   Show column definitions & types
   .stats      Show virtual pages, WAL ring, and RAM consumption
-  .studio     Export and view Web Studio UI
-  .exit       Exit terminal`);
+  .mode       Switch format: table, json, csv
+  .exit       Exit shell`);
     return;
   } else if (input === '.tables') {
     runTerminalQuery(input, `+--------------+-------------+-------------+
-| Name         | Type        | Engine      |
+| Table Name   | Columns     | Rows        |
 +--------------+-------------+-------------+
-| memories     | Multi-Modal | HNSW + JSON |
-| users        | Relational  | B+Tree      |
-| telemetry    | Time-Series | Gorilla XOR |
+| memories     | 4           | 2           |
+| users        | 3           | 1           |
+| telemetry    | 5           | 120         |
 +--------------+-------------+-------------+`);
-    return;
-  } else if (input === '.stats') {
-    runTerminalQuery(input, `Container: ./data.loom (40,960 bytes)
-Allocated Virtual Pages: 10 pages (4KB/page)
-Active In-Container WAL: Ring buffer (1 MB)
-RAM Overhead: 482 KB (Micro Profile)`);
     return;
   }
 
@@ -208,10 +271,60 @@ RAM Overhead: 482 KB (Micro Profile)`);
   setTimeout(() => {
     runTerminalQuery(input, `Query OK. (0.34 ms)
 [LoomStore] 1 record processed.`);
-  }, 60);
+  }, 50);
 }
 
-// 4. Copy to Clipboard & Toast (Zero Emojis)
+// 4. Graphical Installer Dialog Box Navigation
+let currentDialogStep = 0;
+const TOTAL_DIALOG_STEPS = 6;
+
+function setDialogStep(stepIndex) {
+  currentDialogStep = (stepIndex + TOTAL_DIALOG_STEPS) % TOTAL_DIALOG_STEPS;
+
+  // Update tabs
+  document.querySelectorAll('.dialog-step-tab').forEach((tab, i) => {
+    if (i === currentDialogStep) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+
+  // Update content stages
+  document.querySelectorAll('.dialog-stage').forEach((stage, i) => {
+    if (i === currentDialogStep) {
+      stage.classList.add('active');
+    } else {
+      stage.classList.remove('active');
+    }
+  });
+
+  const nextBtn = document.getElementById('dialogNextBtn');
+  if (nextBtn) {
+    nextBtn.textContent = currentDialogStep === TOTAL_DIALOG_STEPS - 1 ? 'Finish' : 'Next >';
+  }
+}
+
+function initInstallerDialog() {
+  document.querySelectorAll('.dialog-step-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const step = parseInt(tab.getAttribute('data-step'), 10);
+      if (!isNaN(step)) setDialogStep(step);
+    });
+  });
+
+  const nextBtn = document.getElementById('dialogNextBtn');
+  const backBtn = document.getElementById('dialogBackBtn');
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => setDialogStep(currentDialogStep + 1));
+  }
+  if (backBtn) {
+    backBtn.addEventListener('click', () => setDialogStep(currentDialogStep - 1));
+  }
+}
+
+// 5. Copy Command to Clipboard
 function initCopyButtons() {
   document.querySelectorAll('.btn-copy-cmd').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -219,7 +332,7 @@ function initCopyButtons() {
       const elem = document.getElementById(targetId);
       if (elem) {
         navigator.clipboard.writeText(elem.textContent.trim()).then(() => {
-          showToast('[COPIED] Installation command copied to clipboard');
+          showToast('[COPIED] Command copied to clipboard');
         });
       }
     });
@@ -237,7 +350,7 @@ function showToast(msg) {
   toast.classList.add('show');
   setTimeout(() => {
     toast.classList.remove('show');
-  }, 2400);
+  }, 2200);
 }
 
 function escapeHtml(string) {
