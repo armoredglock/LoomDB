@@ -178,6 +178,34 @@ nav.site-nav {
   padding-left: 8px;
 }
 
+.brand-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.02em;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
 .nav-links {
   display: flex;
   align-items: center;
@@ -1564,4 +1592,178 @@ footer {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ==========================================================================
+   VISUAL ARCHITECTURE DIAGRAM FRAME & ENHANCED CARD ICONS
+   ========================================================================== */
+.architecture-diagram-frame {
+  margin: 36px 0 54px 0;
+  background: #090b10;
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 1px rgba(249, 115, 22, 0.2);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.architecture-diagram-frame:hover {
+  border-color: rgba(234, 88, 12, 0.5);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 30px rgba(234, 88, 12, 0.15);
+}
+
+.diagram-titlebar {
+  background: #11141c;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.diagram-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.diagram-title {
+  font-family: var(--font-mono);
+  font-size: 0.80rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.diagram-badge {
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  color: var(--accent-amber);
+  background: rgba(234, 88, 12, 0.12);
+  border: 1px solid rgba(234, 88, 12, 0.3);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.diagram-canvas-wrap {
+  background: #080a0f;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diagram-img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+  display: block;
+  border: 1px solid #1a202c;
+  transition: transform 0.3s ease;
+}
+
+.diagram-caption {
+  padding: 12px 24px;
+  background: #0d1017;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.diagram-zoom-btn {
+  color: var(--accent-amber);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(234, 88, 12, 0.08);
+  border: 1px solid rgba(234, 88, 12, 0.25);
+  border-radius: var(--radius-sm);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.diagram-zoom-btn:hover {
+  background: rgba(234, 88, 12, 0.18);
+  border-color: var(--accent-amber);
+}
+
+/* Card Icon Elements */
+.card-icon-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  transition: transform 0.25s var(--ease-snappy), box-shadow 0.25s;
+}
+
+.craft-card:hover .card-icon-wrap {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.icon-amber {
+  color: #f97316;
+  background: rgba(234, 88, 12, 0.12);
+  border: 1px solid rgba(234, 88, 12, 0.35);
+  box-shadow: 0 0 15px rgba(234, 88, 12, 0.15);
+}
+
+.icon-cyan {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+}
+
+.icon-green {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.15);
+}
+
+.icon-white {
+  color: #f1f5f9;
+  background: rgba(241, 245, 249, 0.08);
+  border: 1px solid rgba(241, 245, 249, 0.25);
+  box-shadow: 0 0 15px rgba(241, 245, 249, 0.1);
+}
+
+/* Field Card Icon Elements */
+.field-header-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.field-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-amber);
+  background: rgba(234, 88, 12, 0.1);
+  border: 1px solid rgba(234, 88, 12, 0.25);
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.field-card:hover .field-icon {
+  transform: scale(1.08);
+  border-color: var(--accent-amber);
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.2);
 }
