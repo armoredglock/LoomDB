@@ -1,0 +1,13 @@
+[package]
+name = "loom-cli"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+loom-core = { path = "../loom-core" }
+loom-storage = { path = "../loom-storage" }
+loom-index = { path = "../loom-index" }
+loom-query = { path = "../loom-query" }
+clap = { version = "4.4", features = ["derive"] }

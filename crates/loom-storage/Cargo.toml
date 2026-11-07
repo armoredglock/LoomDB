@@ -1,0 +1,13 @@
+[package]
+name = "loom-storage"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+loom-core = { path = "../loom-core" }
+bytes = "1.5"
+parking_lot = "0.12"
+crossbeam-skiplist = "0.1"
+crc32fast = "1.4"

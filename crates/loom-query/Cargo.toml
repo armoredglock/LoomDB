@@ -1,0 +1,12 @@
+[package]
+name = "loom-query"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+loom-core = { path = "../loom-core" }
+loom-storage = { path = "../loom-storage" }
+loom-index = { path = "../loom-index" }
+serde = { version = "1.0", features = ["derive"] }

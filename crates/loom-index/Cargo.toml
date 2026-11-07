@@ -1,0 +1,10 @@
+[package]
+name = "loom-index"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+loom-core = { path = "../loom-core" }
+serde = { version = "1.0", features = ["derive"] }
