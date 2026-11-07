@@ -1,8 +1,8 @@
+# LoomDB
+
 <p align="center">
   <img src="assets/loomdb-banner.png" alt="LoomDB — Forkable, Deterministic, Budget-Enforced Embedded Multi-Modal Database" width="100%">
 </p>
-
-# LoomDB
 
 > **LoomDB is a forkable, deterministic, budget-enforced, zero-copy embedded multi-modal database with a stable single-file ABI and native OPFS multi-tab coordination.**  
 > *Sub-850KB stripped binary. Sub-512KB idle RAM footprint. Single-file `.loom` container. Runs everywhere: from WebAssembly in browser tabs with multi-tab coordination to edge micro-controllers and multi-core servers.*
