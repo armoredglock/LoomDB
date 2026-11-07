@@ -233,7 +233,8 @@ function setPlatform(key) {
 
   if (osLabel) osLabel.textContent = cfg.name;
   if (mainBtn) {
-    mainBtn.href = `./downloads/${cfg.filename}`;
+    mainBtn.href = `./downloads/${cfg.filename}?v=0.1.2`;
+    mainBtn.setAttribute('download', cfg.filename);
     mainBtn.innerHTML = `<span>Download ${cfg.filename}</span>`;
   }
   if (cmdElem) cmdElem.textContent = cfg.cmd;
