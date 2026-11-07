@@ -304,9 +304,18 @@ nav.site-nav {
    1. HERO SECTION (WIDE 2-COLUMN WITH METRICS & INTERACTIVE GRAPHIC)
    ========================================================================== */
 .hero-section {
-  padding: clamp(32px, 5vh, 48px) 0 clamp(36px, 6vh, 56px) 0;
+  min-height: calc(100vh - 62px);
+  min-height: calc(100dvh - 62px);
+  display: flex;
+  align-items: center;
+  padding: clamp(24px, 4vh, 48px) 0;
   position: relative;
   border-bottom: 1px solid var(--border-subtle);
+  box-sizing: border-box;
+}
+
+.hero-section > .container {
+  width: 100%;
 }
 
 .hero-grid {
@@ -317,6 +326,10 @@ nav.site-nav {
 }
 
 @media (max-width: 1100px) {
+  .hero-section {
+    min-height: auto;
+    padding: 48px 0 64px 0;
+  }
   .hero-grid { grid-template-columns: 1fr; gap: 40px; }
 }
 
@@ -632,7 +645,9 @@ p.hero-desc code {
 /* Responsive screen height adjustments for short viewports/laptops */
 @media (max-height: 850px) {
   .hero-section {
-    padding: clamp(20px, 3vh, 32px) 0 clamp(24px, 4vh, 38px) 0;
+    min-height: calc(100vh - 62px);
+    min-height: calc(100dvh - 62px);
+    padding: 20px 0;
   }
   h1.hero-title {
     font-size: clamp(1.85rem, 3.2vw, 2.7rem);
