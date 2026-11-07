@@ -49,6 +49,7 @@ namespace LoomDB.Installer
             this.MinimizeBox = true;
             this.BackColor = SystemColors.Control;
             this.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+            this.AutoScaleMode = AutoScaleMode.None;
 
             string localApp = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             this.installDir = Path.Combine(localApp, "LoomDB");
@@ -60,14 +61,22 @@ namespace LoomDB.Installer
         private void InitializeComponents()
         {
             int footerHeight = 55;
-            int bannerWidth = 185;
-            int bodyHeight = this.ClientSize.Height - footerHeight;
-            int contentWidth = this.ClientSize.Width - bannerWidth;
+            int bannerWidth = 190;
 
-            // 1. Left Blue Banner (Classic Windows Setup Wizard Left Bar)
+            // 1. Footer Panel (Standard Win32 Dialog Footer)
+            footerPanel = new Panel();
+            footerPanel.Dock = DockStyle.Bottom;
+            footerPanel.Height = footerHeight;
+            footerPanel.BackColor = SystemColors.Control;
+            footerPanel.Paint += (s, e) =>
+            {
+                e.Graphics.DrawLine(SystemPens.ControlDark, 0, 0, footerPanel.Width, 0);
+            };
+
+            // 2. Left Blue Banner (Classic Windows Setup Wizard Left Bar)
             leftBanner = new Panel();
-            leftBanner.Location = new Point(0, 0);
-            leftBanner.Size = new Size(bannerWidth, bodyHeight);
+            leftBanner.Dock = DockStyle.Left;
+            leftBanner.Width = bannerWidth;
             leftBanner.BackColor = Color.FromArgb(16, 42, 102);
             leftBanner.Paint += (s, e) =>
             {
@@ -107,31 +116,33 @@ namespace LoomDB.Installer
                     g.DrawString("The World's Lightest\nMulti-Modal Database\n\nVersion 0.1.0\nSub-512KB RAM Profile\nZero-Dependency Single File", f, b, new PointF(18, 130));
                 }
             };
-            this.Controls.Add(leftBanner);
 
-            // 2. Main Content Panel (Clean White Background, Zero Overlap)
+            // 3. Main Content Panel (Clean White Background, Zero Overlap Guaranteed)
             contentPanel = new Panel();
-            contentPanel.Location = new Point(bannerWidth, 0);
-            contentPanel.Size = new Size(contentWidth, bodyHeight);
+            contentPanel.Dock = DockStyle.Fill;
             contentPanel.BackColor = Color.White;
+
+            // In WinForms, adding Fill first, then Left, then Bottom ensures clean non-overlapping docking
             this.Controls.Add(contentPanel);
+            this.Controls.Add(leftBanner);
+            this.Controls.Add(footerPanel);
 
             // Title Label
             lblTitle = new Label();
-            lblTitle.Font = new Font("Segoe UI", 12.5F, FontStyle.Bold);
+            lblTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(15, 23, 42);
-            lblTitle.BackColor = Color.Transparent;
+            lblTitle.BackColor = Color.White;
             lblTitle.Location = new Point(25, 25);
-            lblTitle.Size = new Size(contentWidth - 50, 48);
+            lblTitle.Size = new Size(375, 45);
             contentPanel.Controls.Add(lblTitle);
 
             // Description Label
             lblDescription = new Label();
             lblDescription.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
             lblDescription.ForeColor = Color.FromArgb(51, 65, 85);
-            lblDescription.BackColor = Color.Transparent;
-            lblDescription.Location = new Point(25, 80);
-            lblDescription.Size = new Size(contentWidth - 50, 110);
+            lblDescription.BackColor = Color.White;
+            lblDescription.Location = new Point(25, 75);
+            lblDescription.Size = new Size(375, 115);
             contentPanel.Controls.Add(lblDescription);
 
             // Path Controls (Step 2)
@@ -227,16 +238,7 @@ namespace LoomDB.Installer
             radDecline.Visible = false;
             contentPanel.Controls.Add(radDecline);
 
-            // 3. Footer Panel (Standard Win32 Dialog Footer)
-            footerPanel = new Panel();
-            footerPanel.Location = new Point(0, bodyHeight);
-            footerPanel.Size = new Size(this.ClientSize.Width, footerHeight);
-            footerPanel.BackColor = SystemColors.Control;
-            footerPanel.Paint += (s, e) =>
-            {
-                e.Graphics.DrawLine(SystemPens.ControlDark, 0, 0, footerPanel.Width, 0);
-            };
-
+            // 3. Configure Footer Buttons
             btnCancel = new Button();
             btnCancel.Text = "Cancel";
             btnCancel.Font = new Font("Segoe UI", 9F);
@@ -260,8 +262,6 @@ namespace LoomDB.Installer
             btnBack.Location = new Point(330, 13);
             btnBack.Click += (s, e) => BackStep();
             footerPanel.Controls.Add(btnBack);
-
-            this.Controls.Add(footerPanel);
         }
 
         private void ShowStep(int step)
@@ -284,8 +284,8 @@ namespace LoomDB.Installer
             switch (step)
             {
                 case 0:
-                    lblDescription.Size = new Size(contentPanel.Width - 50, 180);
                     lblTitle.Text = "Welcome to the LoomDB Setup Wizard";
+                    lblDescription.Size = new Size(375, 180);
                     lblDescription.Text = "This wizard will guide you through the installation of LoomDB 0.1.0 (x64).\n\n" +
                                            "LoomDB is the world's lightest multi-modal database, weaving SQL Relational, " +
                                            "JSON Documents, AI Vectors, and Time-Series into a single portable container with " +
@@ -294,8 +294,8 @@ namespace LoomDB.Installer
                     break;
 
                 case 1:
-                    lblDescription.Size = new Size(contentPanel.Width - 50, 110);
                     lblTitle.Text = "License Agreement";
+                    lblDescription.Size = new Size(375, 110);
                     lblDescription.Text = "Please review the license terms before installing LoomDB.\n\n" +
                                            "LoomDB is open source software distributed under dual Apache-2.0 and MIT licenses.\n" +
                                            "You are granted full permission to use, embed, modify, and distribute LoomDB in both " +
@@ -306,8 +306,8 @@ namespace LoomDB.Installer
                     break;
 
                 case 2:
-                    lblDescription.Size = new Size(contentPanel.Width - 50, 110);
                     lblTitle.Text = "Choose Install Location";
+                    lblDescription.Size = new Size(375, 110);
                     lblDescription.Text = "Setup will install LoomDB and configure command-line access in the following folder.\n\n" +
                                            "To install to this folder, click Next. To install to a different folder, click Browse and select another folder.\n\n" +
                                            "Space required: ~25 MB\nSpace available on drive: >50 GB";
@@ -318,8 +318,8 @@ namespace LoomDB.Installer
                     break;
 
                 case 3:
-                    lblDescription.Size = new Size(contentPanel.Width - 50, 110);
                     lblTitle.Text = "Installing LoomDB";
+                    lblDescription.Size = new Size(375, 110);
                     lblDescription.Text = "Please wait while Setup installs LoomDB on your computer.";
                     progressBar.Visible = true;
                     progressBar.Value = 15;
@@ -332,8 +332,8 @@ namespace LoomDB.Installer
                     break;
 
                 case 4:
-                    lblDescription.Size = new Size(contentPanel.Width - 50, 120);
                     lblTitle.Text = "Completing the LoomDB Setup Wizard";
+                    lblDescription.Size = new Size(375, 120);
                     lblDescription.Text = "LoomDB has been successfully installed on your computer.\n\n" +
                                            "You can now run 'loom' from any Command Prompt or PowerShell terminal to access the interactive shell.\n\n" +
                                            "Click Finish to exit Setup.";

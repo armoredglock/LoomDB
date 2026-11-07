@@ -134,48 +134,57 @@ let hits = db.query(
 println!("Found: {:?}", hits);
 ```
 
-### Python (AI Agents & Local RAG)
+### Python (AI Agents, Local RAG, Embedded or HTTP)
 
-```python
-import loomdb
-
-# Connect to single-file local container (Zero cloud bills, zero Docker)
-db = loomdb.open("./agent_memory.loom")
-
-# Insert document chunks with embeddings
-db.insert("knowledge", [
-    {
-        "id": "doc_991",
-        "content": "LoomDB compiles as a native C-ABI library for Python.",
-        "embedding": [0.041, -0.220, 0.880, 0.105],
-        "category": "architecture"
-    }
-])
-
-# Fused hybrid vector search: cosine similarity + metadata filter
-results = db.vector_search(
-    collection="knowledge",
-    vector=[0.045, -0.231, 0.892, 0.112],
-    filter="category = 'architecture'",
-    top_k=3
-)
-for match in results:
-    print(f"[{match['score']:.4f}] {match['content']}")
+```bash
+pip install loomdb
 ```
 
-### TypeScript / Node.js (Reactive Real-Time Queries)
+```python
+from loomdb import LoomDB
+
+# Connect to local container or running daemon
+db = LoomDB()
+
+# 1. Execute DDL and DML
+db.execute("CREATE TABLE memories (id VARCHAR PRIMARY KEY, topic VARCHAR, score REAL)")
+db.execute("INSERT INTO memories VALUES ('mem_01', 'High-Performance Rust Storage', 0.984)")
+
+# 2. Query with structured dictionary output
+result = db.query("SELECT * FROM memories")
+print(f"Retrieved {result.count} rows in {result.elapsed_us}µs:")
+for row in result:
+    print(row["id"], row["topic"], row["score"])
+```
+
+### TypeScript / Node.js (Zero-Dependency Driver)
+
+```bash
+npm install loomdb
+```
 
 ```typescript
-import { LoomDB } from '@loomdb/client';
+import { LoomDB } from 'loomdb';
 
-// Connect to local LoomDB background daemon
-const db = await LoomDB.connect('loom://127.0.0.1:8484');
+const db = new LoomDB(); // Auto-detects local CLI or HTTP daemon
 
-// Reactive Live Query with continuous push stream (No polling)
-const liveOrders = db.live("SELECT * FROM telemetry WHERE temp > 85.0");
-liveOrders.on('data', (point) => {
-  console.warn("Critical temperature reading:", point.device_id, point.temp);
-});
+// Execute queries seamlessly
+const result = await db.query('SELECT * FROM users');
+console.log(`Retrieved ${result.count} users:`, result.rows);
+```
+
+### Universal HTTP REST / JSON API (Any Language)
+
+Run `loom server --addr 127.0.0.1:8484` and issue standard HTTP requests from any language (Go, C#, PHP, Swift, curl):
+
+```bash
+# Query endpoint returning JSON
+curl -X POST http://127.0.0.1:8484/query \
+     -H "Content-Type: application/json" \
+     -d '{"sql": "SELECT * FROM users"}'
+
+# Engine health & memory profile
+curl http://127.0.0.1:8484/status
 ```
 
 ---

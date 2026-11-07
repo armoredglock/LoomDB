@@ -509,50 +509,38 @@ let hits = db.query(
 println!("Found: {:?}", hits);`
   },
   python: {
-    title: "rag_agent.py — Python Local AI Memory Engine",
-    code: `import loomdb
+    title: "app.py — Python Driver (Embedded & HTTP Daemon Modes)",
+    code: `from loomdb import LoomDB
 
-# Connect to single-file local container (Zero Docker, Zero Cloud bills)
-db = loomdb.open("./agent_memory.loom")
+# Connect to LoomDB (auto-detects local CLI or running HTTP daemon)
+db = LoomDB()
 
-# Insert document chunks with embeddings
-db.insert("knowledge", [
-    {
-        "id": "doc_991",
-        "content": "LoomDB compiles as a native C-ABI library for Python.",
-        "embedding": [0.041, -0.220, 0.880, 0.105],
-        "category": "architecture"
-    }
-])
+# 1. Execute DDL and DML
+db.execute("CREATE TABLE products (id INT, name TEXT, price REAL)")
+db.execute("INSERT INTO products VALUES (1, 'Neural Mesh Sensor', 49.99)")
 
-# Fused hybrid vector search: vector cosine similarity + metadata filter
-results = db.vector_search(
-    collection="knowledge",
-    vector=[0.045, -0.231, 0.892, 0.112],
-    filter="category = 'architecture'",
-    top_k=3
-)
-for match in results:
-    print(f"[{match['score']:.4f}] {match['content']}")`
+# 2. Query with structured dictionary output
+result = db.query("SELECT * FROM products")
+print(f"Retrieved {result.count} rows in {result.elapsed_us}µs:")
+
+for row in result:
+    print(row["id"], row["name"], row["price"])`
   },
   ts: {
-    title: "server.ts — TypeScript Client & Real-Time Live Queries",
-    code: `import { LoomDB } from '@loomdb/client';
+    title: "index.ts — TypeScript & Node.js Driver",
+    code: `import { LoomDB } from 'loomdb';
 
-// Connect to local LoomDB background daemon
-const db = await LoomDB.connect('loom://127.0.0.1:8484');
+// Connect in auto mode (HTTP micro-daemon or local CLI subshell)
+const db = new LoomDB();
 
-// Reactive Live Query with continuous push stream (No polling)
-const liveOrders = db.live("SELECT * FROM telemetry WHERE temp > 85.0");
+// Execute queries seamlessly
+const result = await db.query('SELECT * FROM users');
+console.log(\`Retrieved \${result.count} users in \${result.elapsedUs}µs:\`);
+console.log(result.rows);
 
-liveOrders.on('data', (point) => {
-  console.warn("Critical temperature reading:", point.device_id, point.temp);
-});
-
-// Execute atomic transaction
-await db.transaction(async (tx) => {
-  await tx.execute("INSERT INTO telemetry (device_id, temp) VALUES ($1, $2)", ["sensor_04", 89.2]);
-});`
+// Query all table names in active container
+const tables = await db.getTables();
+console.log('Tables:', tables);`
   },
   cli: {
     title: "Terminal Command Prompt / PowerShell Usage",

@@ -1,0 +1,23 @@
+{
+  "name": "loomdb",
+  "version": "0.1.0",
+  "description": "Official Node.js and TypeScript driver for LoomDB",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "loomdb",
+    "database",
+    "vector",
+    "sql",
+    "embedded",
+    "multi-modal"
+  ],
+  "author": "LoomDB Authors <dev@loomdb.dev>",
+  "license": "MIT OR Apache-2.0",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
