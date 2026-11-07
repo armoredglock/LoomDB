@@ -22,18 +22,9 @@
 
 Embedded databases typically provide flat key-value pairs or SQL tables without branching, budget guarantees, or browser multi-tab safety. LoomDB introduces 6 novel storage primitives as first-class engine operations:
 
-```text
-                                  +---------------------------------------+
-                                  |     LoomDB Unified Storage Pager      |
-                                  +---------------------------------------+
-                                                      |
-         +--------------------+-----------------------+-----------------------+--------------------+
-         |                    |                       |                       |                    |
-         v                    v                       v                       v                    v
-  [1. Forkable COW]   [2. Flight Recorder]   [3. Budget Governor]   [4. Zero-Copy ABI]   [5. OPFS Coord]
-  Page-level branch   Deterministic replay    Hard caps enforced    Lock-free mmap view  Web Locks multi-tab
-  fork(), checkout()  bit-for-bit from WAL    via backpressure/err  typed reader slices  leader/reader queue
-```
+<p align="center">
+  <img src="assets/architecture-diagram.png" alt="LoomDB Architecture: 6 Novel Storage Primitives" width="100%">
+</p>
 
 1. **Forkable Copy-on-Write Snapshots as a Storage Primitive:**
    - Exposes `fork()`, `checkout()`, `discard()`, and `merge()` at page level inside the single `.loom` container.
