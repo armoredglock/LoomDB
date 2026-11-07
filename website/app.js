@@ -47,34 +47,20 @@ function initOSDetection() {
   const ua = window.navigator.userAgent.toLowerCase();
   const platform = window.navigator.platform ? window.navigator.platform.toLowerCase() : '';
 
-  let detectedOS = 'Windows (x64)';
-  let filename = 'loom-v0.1.0-windows-x64.zip';
+  let detectedOS = 'Windows (64-bit)';
+  let filename = 'loom-setup.exe';
   let installCmd = 'irm https://loomdb.dev/install.ps1 | iex';
   let activeCardId = 'os-win';
 
   if (ua.includes('mac') || platform.includes('mac')) {
-    const isArm = ua.includes('arm') || (navigator.userAgentData && navigator.userAgentData.architecture === 'arm');
-    if (isArm) {
-      detectedOS = 'macOS (Apple Silicon M1/M2/M3/M4)';
-      filename = 'loom-v0.1.0-darwin-arm64.tar.gz';
-      activeCardId = 'os-mac-arm';
-    } else {
-      detectedOS = 'macOS (Intel x64)';
-      filename = 'loom-v0.1.0-darwin-x64.tar.gz';
-      activeCardId = 'os-mac-intel';
-    }
+    detectedOS = 'macOS';
+    filename = 'loom-setup-macos.sh';
+    activeCardId = 'os-mac-arm';
     installCmd = 'curl -fsSL https://loomdb.dev/install.sh | sh';
   } else if (ua.includes('linux') || platform.includes('linux')) {
-    const isArm = ua.includes('aarch64') || ua.includes('arm');
-    if (isArm) {
-      detectedOS = 'Linux (ARM64)';
-      filename = 'loom-v0.1.0-linux-arm64.tar.gz';
-      activeCardId = 'os-linux-arm';
-    } else {
-      detectedOS = 'Linux (x86_64)';
-      filename = 'loom-v0.1.0-linux-x64.tar.gz';
-      activeCardId = 'os-linux-x64';
-    }
+    detectedOS = 'Linux';
+    filename = 'loom-setup-linux.sh';
+    activeCardId = 'os-linux-x64';
     installCmd = 'curl -fsSL https://loomdb.dev/install.sh | sh';
   }
 
@@ -86,7 +72,7 @@ function initOSDetection() {
   if (osLabel) osLabel.textContent = detectedOS;
   if (mainBtn) {
     mainBtn.href = `./downloads/${filename}`;
-    mainBtn.innerHTML = `<span>[DOWNLOAD] LoomDB for ${detectedOS.split(' ')[0]}</span> <span style="opacity: 0.65; font-size: 0.72rem; margin-left: 4px;">(v0.1.0)</span>`;
+    mainBtn.innerHTML = `<span>Download ${filename}</span>`;
   }
   if (cmdElem) cmdElem.textContent = installCmd;
 

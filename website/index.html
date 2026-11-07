@@ -3,57 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LoomDB — High-Performance Multi-Modal Database Engine</title>
+  <title>LoomDB &mdash; High-Performance Multi-Modal Database Engine</title>
   <meta name="description" content="LoomDB is a sub-megabyte, zero-dependency multi-modal database in a single portable .loom container file. SQL, JSON, AI Vectors, and Time-Series in <512KB RAM.">
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2312151c'/><path d='M8 10h16M8 16h16M8 22h16M12 7v18M20 7v18' stroke='%23ff6838' stroke-width='2' stroke-linecap='round'/></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2312151c'/><path d='M8 10h16M8 16h16M8 22h16M12 7v18M20 7v18' stroke='%23e8592c' stroke-width='2' stroke-linecap='round'/></svg>">
 </head>
 <body>
 
-  <!-- Scroll Progress Indicator -->
+  <!-- Reading Progress Indicator -->
   <div id="scrollProgressBar"></div>
 
-  <div class="grid-overlay"></div>
-
-  <!-- Redesigned Floating HUD Navigation Bar -->
+  <!-- Editorial Navigation Bar -->
   <nav class="site-nav">
-    <div class="nav-hud-inner">
+    <div class="container nav-wrap">
       <a href="#" class="brand-unit">
-        <div class="brand-glyph">
-          <svg viewBox="0 0 24 24" stroke-width="2.5">
-            <path d="M4 8h16M4 16h16M8 4v16M16 4v16"/>
-          </svg>
-        </div>
-        <div class="brand-title-wrap">
-          <span class="brand-title">LOOM // DB</span>
-          <span class="brand-tag">v0.1.0</span>
-        </div>
+        <span class="brand-title">LoomDB</span>
+        <span class="brand-version">v0.1.0</span>
       </a>
 
-      <!-- Center Telemetry HUD -->
-      <div class="nav-telemetry-pill">
-        <div class="telemetry-node">
-          <div class="pulse-filament"></div>
-          <span style="color: var(--accent-teal);">ONLINE</span>
-        </div>
-        <span style="color: var(--border-highlight);">/</span>
-        <div class="telemetry-node">
-          <span>RAM: <strong style="color: #fff;">482 KB</strong></span>
-        </div>
-        <span style="color: var(--border-highlight);">/</span>
-        <div class="telemetry-node">
-          <span>CONTAINER: <strong style="color: #fff;">.LOOM</strong></span>
-        </div>
-      </div>
-
-      <!-- Nav Links & CTA -->
-      <div class="nav-actions">
-        <a href="#playground" class="nav-item-link">Terminal</a>
+      <div class="nav-links">
+        <a href="#playground" class="nav-item-link">Terminal Shell</a>
         <a href="#architecture" class="nav-item-link">Anatomy</a>
         <a href="#benchmarks" class="nav-item-link">Benchmarks</a>
-        <a href="#installers" class="nav-item-link">Install</a>
-        <a href="https://github.com/loomdb/loomdb" target="_blank" class="nav-item-link">GitHub</a>
-        <a href="#downloads" class="btn-nav-primary">INITIALIZE CLI</a>
+        <a href="#installers" class="nav-item-link">Setup Guide</a>
+        <a href="https://github.com/loomdb/loomdb" target="_blank" class="nav-item-link">GitHub ↗</a>
+        <a href="#downloads" class="btn-nav-primary">Get LoomDB</a>
       </div>
     </div>
   </nav>
@@ -62,120 +36,95 @@
   <header class="hero-section">
     <div class="container">
       <div class="hero-header reveal-on-scroll">
-        <div class="badge-tag">
-          <span>ENGINE SPEC: MICRO PROFILE</span>
-          <span style="color: var(--text-muted);">|</span>
-          <span>SUB-850 KB STRIPPED</span>
-          <span style="color: var(--text-muted);">|</span>
-          <span>ZERO THREAD IDLE</span>
-        </div>
+        <div class="eyebrow">Engine Spec: Micro Profile &middot; Sub-850 KB Stripped &middot; Zero Thread Idle</div>
 
         <h1 class="hero-title">
-          The <span class="highlight">world's lightest</span> multi-modal database.
-          <br>Weaving <span class="accent-word">five paradigms</span> into one.
+          The lightweight database for <em>five paradigms</em> in one container.
         </h1>
 
         <p class="hero-desc">
-          Eliminate database sprawl. LoomDB integrates 
+          LoomDB eliminates polyglot database sprawl. It weaves 
           <strong>SQL Relational</strong>, <strong>JSON Documents</strong>, <strong>HNSW AI Vectors</strong>, 
           and <strong>Time-Series Streams</strong> into a single, portable <code>.loom</code> file. 
-          Zero background threads. Under 512 KB RAM. 100% free and open-source forever.
+          Zero background threads when idle. Under 512 KB RAM. 100% free and open-source.
         </p>
       </div>
 
-      <!-- Machine Detection & Download Deck -->
+      <!-- Single File Installer Download Deck -->
       <section id="downloads" class="download-deck reveal-on-scroll delay-1">
         <div class="detected-row">
           <div class="detected-info">
-            <div class="detected-label">
-              <span class="pulse-filament"></span>
-              <span>Detected Host Architecture</span>
-            </div>
-            <div id="detectedOSName" class="detected-os-name">Detecting platform...</div>
+            <div class="detected-label">Detected Operating System</div>
+            <div id="detectedOSName" class="detected-os-name">Windows (64-bit)</div>
           </div>
 
           <div class="download-cta-group">
-            <a id="mainDownloadBtn" href="./downloads/loom-v0.1.0-windows-x64.zip" class="btn-primary-download">
-              <span>[DOWNLOAD] LoomDB Installer</span>
+            <a id="mainDownloadBtn" href="./downloads/loom-setup.exe" class="btn-primary-download">
+              <span>Download loom-setup.exe</span>
             </a>
             <a href="https://github.com/loomdb/loomdb/releases" target="_blank" class="btn-secondary-link">
-              <span>View Source & SHA256 &rarr;</span>
+              <span>Release Notes &amp; Verification &rarr;</span>
             </a>
           </div>
         </div>
 
-        <!-- One-line terminal installer -->
+        <!-- Terminal Quick Install -->
         <div style="margin-bottom: 24px;">
-          <div style="font-size: 0.74rem; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">
-            Automated Terminal Installer (Registers Service & Adds 'loom' to PATH):
+          <div style="font-size: 0.76rem; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">
+            Or Install via Terminal Command:
           </div>
           <div class="quick-install-box">
             <code id="quickInstallCmd" class="command-snippet">irm https://loomdb.dev/install.ps1 | iex</code>
-            <button class="btn-copy-cmd" data-target="quickInstallCmd">Copy Command</button>
+            <button class="btn-copy-cmd" data-target="quickInstallCmd">Copy</button>
           </div>
         </div>
 
-        <!-- All Platforms Switcher -->
-        <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
-          Select Machine Target:
+        <!-- Single Standalone Installer Cards -->
+        <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">
+          Standalone Single-File Installers by Platform:
         </div>
         <div class="os-grid">
-          <!-- Windows -->
-          <a id="os-win" href="./downloads/loom-v0.1.0-windows-x64.zip" class="os-card">
+          <!-- Windows Single EXE -->
+          <a id="os-win" href="./downloads/loom-setup.exe" class="os-card active-match">
             <div>
               <div class="os-card-header">
-                <span class="os-card-title">Windows x64</span>
-                <span class="os-card-badge">.EXE / .ZIP</span>
+                <span class="os-card-title">Windows</span>
+                <span class="os-card-badge">Single .EXE</span>
               </div>
-              <p class="os-card-desc">Complete installer wizard with background Windows Service and PATH integration.</p>
+              <p class="os-card-desc">Self-contained executable wizard. Automatically installs LoomDB, configures PATH, and sets up service.</p>
             </div>
             <div class="os-card-action">
-              <span>Download for Windows</span>
+              <span>Download loom-setup.exe</span>
               <span>&rarr;</span>
             </div>
           </a>
 
-          <!-- macOS Apple Silicon -->
-          <a id="os-mac-arm" href="./downloads/loom-v0.1.0-darwin-arm64.tar.gz" class="os-card">
+          <!-- macOS Single Installer -->
+          <a id="os-mac-arm" href="./downloads/loom-setup-macos.sh" class="os-card">
             <div>
               <div class="os-card-header">
-                <span class="os-card-title">macOS Apple Silicon</span>
-                <span class="os-card-badge">ARM64 (M1-M4)</span>
+                <span class="os-card-title">macOS</span>
+                <span class="os-card-badge">Apple Silicon &amp; Intel</span>
               </div>
-              <p class="os-card-desc">Native ARM64 build with launchd background daemon and shell PATH exports.</p>
+              <p class="os-card-desc">Single standalone installer script. Installs binary, configures zsh PATH, and registers launchd daemon.</p>
             </div>
             <div class="os-card-action">
-              <span>Download for Mac (ARM)</span>
+              <span>Download loom-setup-macos.sh</span>
               <span>&rarr;</span>
             </div>
           </a>
 
-          <!-- macOS Intel -->
-          <a id="os-mac-intel" href="./downloads/loom-v0.1.0-darwin-x64.tar.gz" class="os-card">
+          <!-- Linux Single Installer -->
+          <a id="os-linux-x64" href="./downloads/loom-setup-linux.sh" class="os-card">
             <div>
               <div class="os-card-header">
-                <span class="os-card-title">macOS Intel</span>
-                <span class="os-card-badge">x86_64</span>
+                <span class="os-card-title">Linux</span>
+                <span class="os-card-badge">x86_64 &amp; ARM64</span>
               </div>
-              <p class="os-card-desc">Optimized for Intel-based Macs with POSIX install script and CLI access.</p>
+              <p class="os-card-desc">Single standalone installer. Installs binary to path, updates bashrc/profile, and registers systemd unit.</p>
             </div>
             <div class="os-card-action">
-              <span>Download for Mac (Intel)</span>
-              <span>&rarr;</span>
-            </div>
-          </a>
-
-          <!-- Linux x64 -->
-          <a id="os-linux-x64" href="./downloads/loom-v0.1.0-linux-x64.tar.gz" class="os-card">
-            <div>
-              <div class="os-card-header">
-                <span class="os-card-title">Linux x86_64</span>
-                <span class="os-card-badge">systemd</span>
-              </div>
-              <p class="os-card-desc">Glibc/Musl compatible binary with automated systemd unit registration.</p>
-            </div>
-            <div class="os-card-action">
-              <span>Download for Linux</span>
+              <span>Download loom-setup-linux.sh</span>
               <span>&rarr;</span>
             </div>
           </a>
@@ -190,19 +139,19 @@
       <div class="section-tag reveal-on-scroll">Command Line Execution</div>
       <h2 class="section-heading reveal-on-scroll delay-1">Interactive terminal shell. Run queries live.</h2>
       <p class="section-sub reveal-on-scroll delay-2">
-        Just like typing <code>sqlcmd</code> or <code>sqlite3</code>, type <code>loom</code> in your terminal 
-        to immediately enter the interactive workspace. Test queries below:
+        Just like typing <code>sqlcmd</code> or <code>sqlite3</code>, type <code>loom</code> in your command prompt 
+        to enter the database workspace. Test real queries below:
       </p>
 
       <div class="terminal-wrapper reveal-on-scroll delay-3">
         <div class="terminal-titlebar">
           <div class="terminal-controls">
-            <div class="term-dot red"></div>
-            <div class="term-dot yellow"></div>
-            <div class="term-dot green"></div>
+            <div class="term-dot"></div>
+            <div class="term-dot"></div>
+            <div class="term-dot"></div>
           </div>
-          <div class="terminal-title">loom-cli &mdash; ./data.loom [Micro: &lt;512KB RAM]</div>
-          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #1cd8a4;">ONLINE</div>
+          <div class="terminal-title">loom &mdash; ./data.loom [Micro Profile: &lt;512KB RAM]</div>
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-teal);">READY</div>
         </div>
 
         <div class="terminal-presets">
@@ -217,11 +166,11 @@
           <div class="term-log">
 <div style="color: #58a6ff; font-weight: 700;">[LOOM_DB] Interactive Shell v0.1.0</div>
 <div style="color: var(--text-muted);">Mounted Container: ./data.loom (Single portable file)
-Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables</span>, or <span style="color: #fff;">.stats</span> for system information.</div>
+Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables</span>, or <span style="color: #fff;">.stats</span> for commands.</div>
           </div>
           
           <div class="term-log">
-<div style="color: #1cd8a4; font-weight: 700; margin-bottom: 4px;">loom&gt; <span style="color: #fff; font-weight: normal;">SELECT id, topic, notes, cosine_similarity(embedding, [0.12, 0.45, -0.22, 0.81]) AS score FROM memories WHERE topic LIKE '%Rust%' ORDER BY score DESC LIMIT 2;</span></div>
+<div style="color: #1cb58e; font-weight: 700; margin-bottom: 4px;">loom&gt; <span style="color: #fff; font-weight: normal;">SELECT id, topic, notes, cosine_similarity(embedding, [0.12, 0.45, -0.22, 0.81]) AS score FROM memories WHERE topic LIKE '%Rust%' ORDER BY score DESC LIMIT 2;</span></div>
 <div style="color: #8b949e; line-height: 1.5;">+--------+------------------------------+--------------------------+--------+
 | id     | topic                        | notes                    | score  |
 +--------+------------------------------+--------------------------+--------+
@@ -315,7 +264,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
       <div class="section-tag reveal-on-scroll">Guided Setup</div>
       <h2 class="section-heading reveal-on-scroll delay-1">Five-stage guided installer workflow</h2>
       <p class="section-sub reveal-on-scroll delay-2">
-        Whether on Windows, macOS, or Linux, the installer takes care of everything with full user control.
+        The standalone installer handles everything in five straightforward stages.
       </p>
 
       <div class="wizard-steps">
@@ -337,13 +286,13 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
           <p class="step-desc">Select custom directory or accept standard OS location (e.g. LocalAppData or /usr/local/bin).</p>
         </div>
 
-        <div class="wizard-step-card reveal-on-scroll delay-3">
+        <div class="wizard-step-card reveal-on-scroll delay-2">
           <div class="step-indicator">STAGE 04</div>
           <h3 class="step-title">CLI PATH Setup</h3>
           <p class="step-desc">Automatically adds <code>loom</code> to system environment variable so you can run it anywhere.</p>
         </div>
 
-        <div class="wizard-step-card reveal-on-scroll delay-4">
+        <div class="wizard-step-card reveal-on-scroll delay-3">
           <div class="step-indicator">STAGE 05</div>
           <h3 class="step-title">Service &amp; Run</h3>
           <p class="step-desc">Optional registration as a Windows Service / systemd unit, followed by immediate REPL launch.</p>
@@ -430,8 +379,8 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
   <footer>
     <div class="container footer-wrap">
       <div class="footer-copy">
-        <div style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: #fff; margin-bottom: 8px;">
-          LOOM // DB
+        <div style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 8px;">
+          LoomDB
         </div>
         <div>Free and open-source software under dual Apache-2.0 / MIT licenses.</div>
         <div style="margin-top: 4px; color: var(--text-muted);">High-performance systems engineering. Zero bloat.</div>

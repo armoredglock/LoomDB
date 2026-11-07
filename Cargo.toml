@@ -5,6 +5,7 @@ members = [
     "crates/loom-index",
     "crates/loom-query",
     "crates/loom-cli",
+    "crates/loom-installer",
 ]
 resolver = "2"
 
