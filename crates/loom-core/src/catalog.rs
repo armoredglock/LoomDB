@@ -96,6 +96,10 @@ impl DatabaseCatalog {
         self.tables.remove(&name.to_lowercase()).is_some()
     }
 
+    pub fn table_exists(&self, name: &str) -> bool {
+        self.tables.contains_key(&name.to_lowercase())
+    }
+
     pub fn get_table(&self, name: &str) -> Option<&TableDef> {
         self.tables.get(&name.to_lowercase())
     }
@@ -143,5 +147,39 @@ impl DatabaseCatalog {
         let cat: Self = serde_json::from_slice(&data)
             .unwrap_or_else(|_| Self::new());
         Ok(cat)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_catalog_table_creation() {
+        let mut cat = DatabaseCatalog::new();
+        assert!(cat.table_exists("memories"));
+
+        cat.create_table(
+            "users",
+            vec![
+                ColumnDef { name: "id".into(), data_type: DataType::Integer, is_primary_key: true, is_unique: true, is_nullable: false },
+                ColumnDef { name: "name".into(), data_type: DataType::Text, is_primary_key: false, is_unique: false, is_nullable: false },
+            ],
+            "CREATE TABLE users (id INT, name TEXT);".into()
+        );
+
+        assert!(cat.table_exists("users"));
+        assert_eq!(cat.get_table("users").unwrap().columns.len(), 2);
+    }
+
+    #[test]
+    fn test_catalog_insert_row() {
+        let mut cat = DatabaseCatalog::new();
+        let mut row = HashMap::new();
+        row.insert("id".into(), serde_json::json!("mem_99"));
+        row.insert("topic".into(), serde_json::json!("Test Vector Storage"));
+
+        assert!(cat.insert_row("memories", row).is_ok());
+        assert_eq!(cat.get_table("memories").unwrap().rows.len(), 3);
     }
 }

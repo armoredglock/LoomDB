@@ -42,3 +42,27 @@ pub fn euclidean_distance_squared(a: &[f32], b: &[f32]) -> f32 {
         diff * diff
     }).sum()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_cosine_similarity() {
+        let v1 = vec![1.0, 0.0, 0.0];
+        let v2 = vec![1.0, 0.0, 0.0];
+        let v3 = vec![0.0, 1.0, 0.0];
+        let v4 = vec![-1.0, 0.0, 0.0];
+
+        assert!((cosine_similarity(&v1, &v2) - 1.0).abs() < 1e-6);
+        assert!((cosine_similarity(&v1, &v3) - 0.0).abs() < 1e-6);
+        assert!((cosine_similarity(&v1, &v4) - (-1.0)).abs() < 1e-6);
+    }
+
+    #[test]
+    fn test_euclidean_distance() {
+        let a = vec![0.0, 0.0];
+        let b = vec![3.0, 4.0];
+        assert_eq!(euclidean_distance_squared(&a, &b), 25.0);
+    }
+}

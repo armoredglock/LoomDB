@@ -486,7 +486,6 @@ fn render_ascii_table(table: &loom_core::catalog::TableDef, query: &str, elapsed
 }
 
 fn parse_create_table(ddl: &str) -> Option<(String, Vec<ColumnDef>)> {
-    let lower = ddl.to_lowercase();
     let start_paren = ddl.find('(')?;
     let end_paren = ddl.rfind(')')?;
 
