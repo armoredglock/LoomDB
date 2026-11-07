@@ -10,12 +10,7 @@
 [![Binary Size](https://img.shields.io/badge/binary%20weight-%3C%20850%20KB-orange.svg)](#)
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/armoredglock/LoomDB/main/brag-output/brag.mp4">
-    <img src="brag-output/loom-preview.gif" alt="LoomDB Launch Showcase" width="100%">
-  </a>
-</p>
-<p align="center">
-  <em>Launch Video Showcase: <a href="brag-output/brag.mp4">Watch Full 1080p MP4 with Stereo Soundtrack</a> &bull; <a href="brag-output/brag.jpg">View 1080p Poster</a></em>
+  <img src="assets/loomdb-poster.png" alt="LoomDB Architecture and Specifications" width="100%">
 </p>
 
 ---
