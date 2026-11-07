@@ -3,7 +3,7 @@ use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-const LOOM_BYTES: &[u8] = include_bytes!("../../../target/debug/loom.exe");
+const LOOM_BYTES: &[u8] = b"LOOMDB_STANDALONE_PAYLOAD";
 const STUDIO_HTML: &str = include_str!("../../loom-cli/src/studio.html");
 
 fn main() {
