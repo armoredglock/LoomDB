@@ -57,8 +57,8 @@ html {
 }
 
 /* Ensure anchor scrolling doesn't clip under the sticky navbar */
-section[id] {
-  scroll-margin-top: 96px;
+section[id], header[id], div[id] {
+  scroll-margin-top: 110px;
 }
 
 body {
@@ -1244,7 +1244,11 @@ table.spec-table tr:hover td {
    7. DOWNLOAD DECK (BOTTOM PLACEMENT & HIGH CONTRAST)
    ========================================================================== */
 .download-section {
-  padding: 96px 0 120px 0;
+  padding: 100px 0 140px 0;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background: linear-gradient(180deg, var(--bg-abyss) 0%, #0a0d13 100%);
 }
 

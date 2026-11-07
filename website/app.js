@@ -4,6 +4,7 @@
 // ==============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  initSmoothScrollMappings();
   initScrollAnimations();
   initSpotlightEffect();
   initNavScrollTracking();
@@ -15,6 +16,50 @@ document.addEventListener('DOMContentLoaded', () => {
   initSDKTabs();
   initCopyButtons();
 });
+
+// 1. Smooth Scroll & Button Mapping Engine (Guarantees Zero Clipping Under Sticky Nav)
+function initSmoothScrollMappings() {
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const targetId = link.getAttribute('href');
+      if (!targetId || targetId === '#') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const targetElement = document.querySelector(targetId);
+      if (!targetElement) return;
+
+      e.preventDefault();
+
+      const nav = document.querySelector('nav.site-nav');
+      const navHeight = nav ? nav.getBoundingClientRect().height : 75;
+
+      // Targeted offset: For #downloads, frame the download card cleanly below the navbar
+      let targetPos;
+      if (targetId === '#downloads') {
+        const deck = targetElement.querySelector('.download-deck-wide') || targetElement;
+        const deckRect = deck.getBoundingClientRect();
+        const absoluteTop = window.scrollY + deckRect.top;
+        targetPos = Math.max(0, absoluteTop - navHeight - 36);
+      } else {
+        const rect = targetElement.getBoundingClientRect();
+        const absoluteTop = window.scrollY + rect.top;
+        targetPos = Math.max(0, absoluteTop - navHeight - 24);
+      }
+
+      window.scrollTo({
+        top: targetPos,
+        behavior: 'smooth'
+      });
+
+      if (window.history && window.history.pushState) {
+        window.history.pushState(null, null, targetId);
+      }
+    });
+  });
+}
 
 // 1. Reading Progress Bar & Intersection Reveal Animations
 function initScrollAnimations() {
@@ -261,6 +306,10 @@ function initOSSelection() {
   // Attach click listeners to all OS cards
   document.querySelectorAll('.os-card-wide').forEach(card => {
     card.addEventListener('click', (e) => {
+      // If clicking the direct download button, let it trigger download naturally
+      if (e.target.closest('a')) {
+        return;
+      }
       e.preventDefault();
       const osKey = card.getAttribute('data-os');
       if (osKey) setPlatform(osKey);
