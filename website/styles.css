@@ -145,7 +145,7 @@ nav.site-nav {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 16px 0;
+  padding: 12px 0;
   transition: background 0.2s;
 }
 
@@ -304,7 +304,7 @@ nav.site-nav {
    1. HERO SECTION (WIDE 2-COLUMN WITH METRICS & INTERACTIVE GRAPHIC)
    ========================================================================== */
 .hero-section {
-  padding: 88px 0 96px 0;
+  padding: clamp(32px, 5vh, 48px) 0 clamp(36px, 6vh, 56px) 0;
   position: relative;
   border-bottom: 1px solid var(--border-subtle);
 }
@@ -312,12 +312,12 @@ nav.site-nav {
 .hero-grid {
   display: grid;
   grid-template-columns: 1.15fr 1fr;
-  gap: 56px;
+  gap: 48px;
   align-items: center;
 }
 
 @media (max-width: 1100px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; }
 }
 
 .eyebrow {
@@ -325,25 +325,25 @@ nav.site-nav {
   align-items: center;
   gap: 8px;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--accent-amber);
   background: rgba(232, 89, 44, 0.08);
   border: 1px solid rgba(232, 89, 44, 0.22);
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: var(--radius-sm);
-  margin-bottom: 22px;
+  margin-bottom: 16px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 h1.hero-title {
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 4.4vw, 3.8rem);
+  font-size: clamp(2.1rem, 3.6vw, 3.2rem);
   font-weight: 700;
-  line-height: 1.12;
+  line-height: 1.14;
   color: var(--text-pure);
   letter-spacing: -0.025em;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 h1.hero-title em {
@@ -353,10 +353,10 @@ h1.hero-title em {
 }
 
 p.hero-desc {
-  font-size: 1.12rem;
-  line-height: 1.7;
+  font-size: 1.02rem;
+  line-height: 1.6;
   color: var(--text-secondary);
-  margin-bottom: 36px;
+  margin-bottom: 24px;
 }
 
 p.hero-desc strong {
@@ -377,9 +377,9 @@ p.hero-desc code {
 .hero-cta-group {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 40px;
+  margin-bottom: 28px;
 }
 
 .btn-hero-primary {
@@ -387,9 +387,9 @@ p.hero-desc code {
   color: #fff;
   text-decoration: none;
   font-family: var(--font-body);
-  font-size: 0.98rem;
+  font-size: 0.94rem;
   font-weight: 700;
-  padding: 14px 28px;
+  padding: 12px 24px;
   border-radius: var(--radius-sm);
   display: inline-flex;
   align-items: center;
@@ -410,8 +410,8 @@ p.hero-desc code {
   border: 1px solid var(--border-active);
   text-decoration: none;
   font-family: var(--font-mono);
-  font-size: 0.88rem;
-  padding: 14px 24px;
+  font-size: 0.84rem;
+  padding: 12px 20px;
   border-radius: var(--radius-sm);
   display: inline-flex;
   align-items: center;
@@ -430,12 +430,12 @@ p.hero-desc code {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
-  padding-top: 28px;
+  padding-top: 18px;
   border-top: 1px solid var(--border-subtle);
 }
 
 @media (max-width: 640px) {
-  .metric-strip { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .metric-strip { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 }
 
 .metric-item {
@@ -445,7 +445,7 @@ p.hero-desc code {
 
 .metric-value {
   font-family: var(--font-display);
-  font-size: 1.65rem;
+  font-size: 1.45rem;
   font-weight: 700;
   color: var(--text-pure);
   line-height: 1.1;
@@ -453,10 +453,10 @@ p.hero-desc code {
 
 .metric-label {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
   text-transform: uppercase;
-  margin-top: 4px;
+  margin-top: 3px;
   letter-spacing: 0.04em;
 }
 
@@ -468,7 +468,7 @@ p.hero-desc code {
   background: var(--bg-carbon);
   border: 1px solid var(--border-active);
   border-radius: var(--radius-lg);
-  padding: 28px;
+  padding: 20px 22px;
   position: relative;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   overflow: hidden;
@@ -478,14 +478,14 @@ p.hero-desc code {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--border-subtle);
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 .visual-title {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -494,20 +494,20 @@ p.hero-desc code {
 
 .visual-badge {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.05em;
   color: #cbd5e1;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: var(--radius-pill);
 }
 
 .paradigm-flow {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   position: relative;
   z-index: 2;
 }
@@ -519,9 +519,9 @@ p.hero-desc code {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 12px 16px;
+  padding: 9px 14px;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
@@ -536,25 +536,25 @@ p.hero-desc code {
 .flow-tag {
   color: var(--accent-amber);
   font-weight: 700;
-  font-size: 0.82rem;
-  min-width: 110px;
+  font-size: 0.80rem;
+  min-width: 105px;
 }
 
 .flow-engine {
   color: var(--text-secondary);
-  font-size: 0.77rem;
+  font-size: 0.75rem;
   flex: 1;
-  padding: 0 12px;
+  padding: 0 10px;
 }
 
 /* Crisp Titanium Spec Badges (Replaced Green Writings) */
 .flow-badge {
   color: #e2e8f0;
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 3px 9px;
+  padding: 2px 8px;
   border-radius: 4px;
   letter-spacing: 0.03em;
   transition: all 0.2s ease;
@@ -570,8 +570,8 @@ p.hero-desc code {
 /* Dynamic Weaving SVG Connector Stream */
 .weaving-connector {
   position: relative;
-  height: 48px;
-  margin: 6px 0;
+  height: 34px;
+  margin: 4px 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -603,7 +603,7 @@ p.hero-desc code {
   background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-elevated) 100%);
   border: 1px solid var(--accent-amber);
   border-radius: var(--radius-sm);
-  padding: 16px 20px;
+  padding: 12px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -614,20 +614,64 @@ p.hero-desc code {
 
 .loom-core-target strong {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   color: #fff;
 }
 
 .loom-core-spec {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   color: var(--accent-amber);
   font-weight: 700;
   background: rgba(232, 89, 44, 0.12);
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 4px;
   border: 1px solid rgba(232, 89, 44, 0.3);
 }
+
+/* Responsive screen height adjustments for short viewports/laptops */
+@media (max-height: 850px) {
+  .hero-section {
+    padding: clamp(20px, 3vh, 32px) 0 clamp(24px, 4vh, 38px) 0;
+  }
+  h1.hero-title {
+    font-size: clamp(1.85rem, 3.2vw, 2.7rem);
+    margin-bottom: 12px;
+  }
+  p.hero-desc {
+    font-size: 0.96rem;
+    line-height: 1.52;
+    margin-bottom: 18px;
+  }
+  .hero-cta-group {
+    margin-bottom: 20px;
+  }
+  .metric-strip {
+    padding-top: 14px;
+  }
+  .metric-value {
+    font-size: 1.30rem;
+  }
+  .hero-visual-card {
+    padding: 16px 18px;
+  }
+  .visual-titlebar {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  .flow-row {
+    padding: 7px 12px;
+    font-size: 0.74rem;
+  }
+  .weaving-connector {
+    height: 26px;
+    margin: 2px 0;
+  }
+  .loom-core-target {
+    padding: 10px 14px;
+  }
+}
+
 
 /* ==========================================================================
    2. TERMINAL SHELL (WITH SANDBOX LIMIT GATE)
