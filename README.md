@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/loomdb-banner.png" alt="LoomDB — Forkable, Deterministic, Budget-Enforced Embedded Multi-Modal Database" width="100%">
+</p>
+
 # LoomDB
 
 > **LoomDB is a forkable, deterministic, budget-enforced, zero-copy embedded multi-modal database with a stable single-file ABI and native OPFS multi-tab coordination.**  
@@ -8,10 +12,6 @@
 [![Platform](https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux%20%7C%20wasm-lightgrey.svg)](#)
 [![Footprint](https://img.shields.io/badge/idle%20RAM-%3C%20512%20KB-orange.svg)](#)
 [![Binary Size](https://img.shields.io/badge/binary%20weight-%3C%20850%20KB-orange.svg)](#)
-
-<p align="center">
-  <img src="assets/loomdb-poster.png" alt="LoomDB Architecture and Specifications" width="100%">
-</p>
 
 ---
 
