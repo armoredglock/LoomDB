@@ -10,3 +10,4 @@ loom-core = { path = "../loom-core" }
 loom-storage = { path = "../loom-storage" }
 loom-index = { path = "../loom-index" }
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
