@@ -16,7 +16,7 @@
   --border-highlight: #46536d;
 
   --accent-amber: #e8592c;
-  --accent-amber-glow: rgba(232, 89, 44, 0.16);
+  --accent-amber-glow: rgba(232, 89, 44, 0.2);
   --accent-teal: #1cb58e;
   --accent-cyan: #38bdf8;
 
@@ -105,7 +105,7 @@ body {
 }
 
 /* ==========================================================================
-   NAVIGATION BAR (ORDER MATCHES ON-PAGE SEQUENCE)
+   NAVIGATION BAR (ORDER MATCHES ON-PAGE FLOW)
    ========================================================================== */
 nav.site-nav {
   position: sticky;
@@ -204,7 +204,7 @@ nav.site-nav {
 .delay-4 { transition-delay: 0.32s; }
 
 /* ==========================================================================
-   HERO SECTION (BALANCED 2-COLUMN WIDE LAYOUT)
+   HERO SECTION (WIDE 2-COLUMN SPACE UTILIZATION)
    ========================================================================== */
 .hero-section {
   padding: 88px 0 72px 0;
@@ -537,7 +537,6 @@ p.section-sub {
   color: #fff;
 }
 
-/* Terminal Gate Lock Banner */
 .terminal-gate-card {
   margin-top: 16px;
   background: #151821;
@@ -783,121 +782,27 @@ table.spec-table tr:hover td {
 }
 
 /* ==========================================================================
-   GRAPHICAL INSTALLER DIALOG BOX VISUALIZER
+   DEVELOPER QUICKSTART & SDK CODE EXAMPLES
    ========================================================================== */
-.wizard-section {
+.quickstart-section {
   padding: 88px 0;
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.installer-dialog-window {
-  background: #141720;
-  border: 1px solid var(--border-highlight);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.6);
-  margin-top: 40px;
-}
-
-.dialog-window-header {
-  background: #0f1218;
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 12px 20px;
+.sdk-tab-bar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.dialog-window-title {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-}
-
-.dialog-window-body {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  min-height: 380px;
-}
-
-@media (max-width: 768px) {
-  .dialog-window-body { grid-template-columns: 1fr; }
-}
-
-.dialog-sidebar {
-  background: #10131b;
-  border-right: 1px solid var(--border-subtle);
-  padding: 24px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.dialog-step-tab {
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
   gap: 10px;
-  transition: all 0.15s;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 16px;
+  margin-top: 36px;
+  overflow-x: auto;
 }
 
-.dialog-step-tab.active {
+.sdk-tab {
   background: var(--bg-surface);
-  color: #fff;
-  border-left: 2px solid var(--accent-amber);
-}
-
-.dialog-content-pane {
-  padding: 36px 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.dialog-stage {
-  display: none;
-  animation: fadeIn 0.25s ease;
-}
-
-.dialog-stage.active {
-  display: block;
-}
-
-.dialog-stage-title {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--text-pure);
-  margin-bottom: 12px;
-}
-
-.dialog-stage-text {
-  font-size: 0.95rem;
+  border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 24px;
-}
-
-.dialog-window-footer {
-  border-top: 1px solid var(--border-subtle);
-  padding: 16px 28px;
-  background: #0f1218;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.dialog-nav-btn {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-active);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  font-weight: 600;
+  font-family: var(--font-mono);
   font-size: 0.82rem;
   padding: 8px 18px;
   border-radius: var(--radius-sm);
@@ -905,27 +810,54 @@ table.spec-table tr:hover td {
   transition: all 0.15s;
 }
 
-.dialog-nav-btn:hover {
-  background: var(--border-highlight);
+.sdk-tab:hover {
   color: #fff;
+  border-color: var(--border-highlight);
 }
 
-.dialog-nav-btn.primary {
-  background: var(--accent-amber);
+.sdk-tab.active {
+  background: var(--accent-amber-glow);
   border-color: var(--accent-amber);
-  color: #fff;
+  color: var(--accent-amber);
+  font-weight: 600;
 }
 
-.dialog-nav-btn.primary:hover {
-  background: #f06437;
+.sdk-code-box {
+  background: #090b0f;
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius-md);
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.sdk-code-header {
+  background: #11141b;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 10px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.sdk-code-content {
+  padding: 22px;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: #e6edf3;
+  overflow-x: auto;
+  white-space: pre;
 }
 
 /* ==========================================================================
-   DOWNLOAD DECK (PLACED AT BOTTOM, WIDE & COMPLETE)
+   DOWNLOAD DECK (BOTTOM PLACEMENT & HIGH VISIBILITY)
    ========================================================================== */
 .download-section {
-  padding: 96px 0;
-  background: linear-gradient(180deg, var(--bg-abyss) 0%, #0a0c10 100%);
+  padding: 96px 0 120px 0;
+  background: linear-gradient(180deg, var(--bg-abyss) 0%, #0a0d13 100%);
 }
 
 .download-deck-wide {
@@ -933,7 +865,7 @@ table.spec-table tr:hover td {
   border: 1px solid var(--border-active);
   border-radius: var(--radius-lg);
   padding: 48px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
 }
 
 .deck-header-row {
@@ -941,7 +873,7 @@ table.spec-table tr:hover td {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 28px;
   padding-bottom: 32px;
   border-bottom: 1px solid var(--border-subtle);
   margin-bottom: 32px;
@@ -949,9 +881,85 @@ table.spec-table tr:hover td {
 
 .detected-platform-title {
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--text-pure);
+  margin-top: 4px;
+}
+
+.download-cta-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-primary-download {
+  background: var(--accent-amber);
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 16px 36px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 20px var(--accent-amber-glow);
+  transition: transform 0.15s var(--ease-snappy), background 0.15s, box-shadow 0.15s;
+}
+
+.btn-primary-download:hover {
+  background: #f06437;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(232, 89, 44, 0.35);
+}
+
+.btn-secondary-link {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.btn-secondary-link:hover {
+  color: var(--text-pure);
+}
+
+.quick-install-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.command-snippet {
+  color: var(--accent-cyan);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.btn-copy-cmd {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-active);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-copy-cmd:hover {
+  color: var(--text-pure);
+  border-color: var(--border-highlight);
 }
 
 .os-grid-wide {
@@ -969,7 +977,7 @@ table.spec-table tr:hover td {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 24px;
+  padding: 26px;
   cursor: pointer;
   transition: all 0.2s var(--ease-snappy);
   display: flex;
@@ -984,7 +992,40 @@ table.spec-table tr:hover td {
 
 .os-card-wide.active-match {
   border-color: var(--accent-amber);
-  background: linear-gradient(180deg, rgba(232, 89, 44, 0.06) 0%, var(--bg-surface) 100%);
+  background: linear-gradient(180deg, rgba(232, 89, 44, 0.08) 0%, var(--bg-surface) 100%);
+}
+
+.os-card-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--text-pure);
+}
+
+.os-card-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+}
+
+.os-card-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 12px 0 20px 0;
+  line-height: 1.5;
+}
+
+.os-card-action {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent-amber);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
 }
 
 /* ==========================================================================

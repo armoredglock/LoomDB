@@ -14,7 +14,7 @@
   <div id="scrollProgressBar"></div>
   <div class="grid-overlay"></div>
 
-  <!-- Navigation Bar (Order Matches On-Page Flow) -->
+  <!-- Navigation Bar (Strict Order Matches On-Page Flow) -->
   <nav class="site-nav">
     <div class="container nav-wrap">
       <a href="#" class="brand-unit">
@@ -27,7 +27,7 @@
         <a href="#architecture" class="nav-item-link">Anatomy</a>
         <a href="#fields" class="nav-item-link">Why LoomDB</a>
         <a href="#benchmarks" class="nav-item-link">Benchmarks</a>
-        <a href="#installer-guide" class="nav-item-link">Setup Guide</a>
+        <a href="#quickstart" class="nav-item-link">Developer SDKs</a>
         <a href="https://github.com/loomdb/loomdb" target="_blank" class="nav-item-link">GitHub ↗</a>
         <a href="#downloads" class="btn-nav-primary">Get LoomDB</a>
       </div>
@@ -55,7 +55,7 @@
 
           <div class="hero-cta-group">
             <a href="#downloads" class="btn-hero-primary">
-              <span>Get Started &middot; Download v0.1.0</span>
+              <span>Get LoomDB &middot; v0.1.0</span>
               <span>&rarr;</span>
             </a>
             <a href="#playground" class="btn-hero-secondary">
@@ -65,7 +65,7 @@
           </div>
         </div>
 
-        <!-- Right: Visual Multi-Model Convergence Diagram -->
+        <!-- Right: Multi-Model Paradigm Convergence Diagram -->
         <div class="hero-visual-card reveal-on-scroll delay-1">
           <div class="visual-titlebar">
             <span class="visual-title">Multi-Modal Paradigm Convergence</span>
@@ -425,130 +425,57 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
     </div>
   </section>
 
-  <!-- 6. Graphical Installer Dialog Box Visualizer -->
-  <section id="installer-guide" class="wizard-section">
+  <!-- 6. Developer SDKs & Integration (Replaces the odd simulator) -->
+  <section id="quickstart" class="quickstart-section">
     <div class="container">
-      <div class="section-tag reveal-on-scroll">Guided Setup Visualizer</div>
-      <h2 class="section-heading reveal-on-scroll delay-1">Interactive installer dialog simulation</h2>
+      <div class="section-tag reveal-on-scroll">Developer Integration</div>
+      <h2 class="section-heading reveal-on-scroll delay-1">Integrate in your code in under 30 seconds</h2>
       <p class="section-sub reveal-on-scroll delay-2">
-        See how the standalone single-file installer works. Click the stages on the left or use the Next button to preview the setup workflow:
+        LoomDB runs as an embedded in-process library (zero network overhead) or as a standalone local server. Select your stack:
       </p>
 
-      <div class="installer-dialog-window reveal-on-scroll delay-3">
-        <div class="dialog-window-header">
-          <div class="terminal-controls">
-            <div class="term-dot"></div>
-            <div class="term-dot"></div>
-            <div class="term-dot"></div>
-          </div>
-          <div class="dialog-window-title">LoomDB Setup Wizard &mdash; Version 0.1.0</div>
-          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-amber);">STANDALONE .EXE</div>
+      <div class="sdk-tab-bar reveal-on-scroll delay-2">
+        <button class="sdk-tab active" data-sdk="rust">Rust (Embedded)</button>
+        <button class="sdk-tab" data-sdk="python">Python (AI / RAG)</button>
+        <button class="sdk-tab" data-sdk="ts">TypeScript / Node.js</button>
+        <button class="sdk-tab" data-sdk="cli">Terminal CLI &amp; SQL</button>
+      </div>
+
+      <div class="sdk-code-box reveal-on-scroll delay-3">
+        <div class="sdk-code-header">
+          <span id="sdkCodeTitle">main.rs &mdash; Embedded In-Process Zero-Copy Access</span>
+          <span style="color: var(--accent-teal);">ZERO LATENCY</span>
         </div>
+        <pre id="sdkCodeBlock" class="sdk-code-content">// Open or create a single-file portable container
+let db = loom_core::LoomDB::open("./app.loom")?;
 
-        <div class="dialog-window-body">
-          <!-- Dialog Sidebar Tabs -->
-          <div class="dialog-sidebar">
-            <div class="dialog-step-tab active" data-step="0">1. Welcome &amp; Spec</div>
-            <div class="dialog-step-tab" data-step="1">2. License Agreement</div>
-            <div class="dialog-step-tab" data-step="2">3. Destination Path</div>
-            <div class="dialog-step-tab" data-step="3">4. Environment PATH</div>
-            <div class="dialog-step-tab" data-step="4">5. Background Service</div>
-            <div class="dialog-step-tab" data-step="5">6. Ready to Weave</div>
-          </div>
+// Insert document with high-dimensional vector embedding
+db.collection("memories").insert(serde_json::json!({
+    "id": "mem_01",
+    "topic": "High-Performance Rust Storage",
+    "notes": "LoomDB achieves sub-512KB idle RAM overhead.",
+    "embedding": [0.12, 0.45, -0.22, 0.81]
+}))?;
 
-          <!-- Dialog Content Pane -->
-          <div class="dialog-content-pane">
-            <!-- Stage 0: Welcome -->
-            <div class="dialog-stage active" id="stage0">
-              <h3 class="dialog-stage-title">Welcome to LoomDB Setup</h3>
-              <p class="dialog-stage-text">
-                This wizard will configure LoomDB on your system as both a zero-latency local library and a CLI command available from any terminal workspace.
-              </p>
-              <div style="background: var(--bg-carbon); border: 1px solid var(--border-subtle); padding: 14px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary);">
-                <div>&bull; Micro Memory Profile: &lt;512 KB Idle RAM</div>
-                <div>&bull; Multi-Modal Engine: SQL + JSON + HNSW Vectors + Time-Series</div>
-                <div>&bull; Single File Architecture: All storage encapsulated in .loom</div>
-              </div>
-            </div>
-
-            <!-- Stage 1: License -->
-            <div class="dialog-stage" id="stage1">
-              <h3 class="dialog-stage-title">Open Source License Agreement</h3>
-              <p class="dialog-stage-text">
-                LoomDB is distributed under the permissive dual MIT and Apache-2.0 licenses. 
-                You are free to use, modify, embed, and redistribute LoomDB in both personal and commercial applications with zero fees.
-              </p>
-              <div style="background: var(--bg-carbon); border: 1px solid var(--border-subtle); padding: 14px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-teal);">
-                [x] I accept the terms of the license agreement and wish to proceed.
-              </div>
-            </div>
-
-            <!-- Stage 2: Destination -->
-            <div class="dialog-stage" id="stage2">
-              <h3 class="dialog-stage-title">Installation Destination</h3>
-              <p class="dialog-stage-text">
-                Choose the directory where the single-file binary will be placed. The installer defaults to your user profile directory so administrator rights are not required.
-              </p>
-              <div style="display: flex; gap: 8px; align-items: center;">
-                <input type="text" readonly value="C:\Users\User\AppData\Local\LoomDB" style="flex: 1; background: var(--bg-carbon); border: 1px solid var(--border-active); color: #fff; padding: 10px 14px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.85rem;">
-                <button style="background: var(--bg-elevated); border: 1px solid var(--border-active); color: var(--text-secondary); padding: 10px 16px; border-radius: 4px; font-size: 0.82rem; cursor: pointer;">Browse...</button>
-              </div>
-            </div>
-
-            <!-- Stage 3: PATH -->
-            <div class="dialog-stage" id="stage3">
-              <h3 class="dialog-stage-title">System Environment PATH Integration</h3>
-              <p class="dialog-stage-text">
-                The setup wizard automatically appends LoomDB to your User PATH variable. 
-                This allows you to type <code>loom</code> in any Command Prompt, PowerShell, or bash terminal to immediately enter the database workspace.
-              </p>
-              <div style="background: var(--bg-carbon); border: 1px solid var(--border-subtle); padding: 14px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-cyan);">
-                &gt; loom --version &rarr; loom 0.1.0 [Ready]
-              </div>
-            </div>
-
-            <!-- Stage 4: Service -->
-            <div class="dialog-stage" id="stage4">
-              <h3 class="dialog-stage-title">Windows Background Service Option</h3>
-              <p class="dialog-stage-text">
-                Optionally register LoomDB as an automatic OS service (Windows Service / systemd unit). When active, applications and the embedded Web Studio can connect at <code>127.0.0.1:8484</code>.
-              </p>
-              <div style="background: var(--bg-carbon); border: 1px solid var(--border-subtle); padding: 14px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-secondary);">
-                [x] Register LoomDB as automatic Windows background service (Port 8484)
-              </div>
-            </div>
-
-            <!-- Stage 5: Ready -->
-            <div class="dialog-stage" id="stage5">
-              <h3 class="dialog-stage-title">Installation Complete</h3>
-              <p class="dialog-stage-text">
-                LoomDB has been successfully installed. You can now launch the interactive shell directly from your terminal or open the Web Studio in your browser.
-              </p>
-              <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-teal);">
-                Command: loom &rarr; Drops directly into interactive prompt.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dialog Footer Controls -->
-        <div class="dialog-window-footer">
-          <button id="dialogBackBtn" class="dialog-nav-btn">&lt; Back</button>
-          <div style="display: flex; gap: 10px;">
-            <button id="dialogNextBtn" class="dialog-nav-btn primary">Next &gt;</button>
-          </div>
-        </div>
+// Hybrid single-pass vector distance query with relational filter
+let hits = db.query(
+    "SELECT id, topic, notes FROM memories 
+     WHERE topic LIKE '%Rust%' 
+     ORDER BY cosine_similarity(embedding, [0.12, 0.45, -0.22, 0.81]) DESC 
+     LIMIT 1;"
+)?;
+println!("Found: {:?}", hits);</pre>
       </div>
     </div>
   </section>
 
-  <!-- 7. Download & Setup Deck (Placed at Bottom, Full Width) -->
+  <!-- 7. Enhanced Download Deck (Placed at Bottom, Full Width & High Contrast) -->
   <section id="downloads" class="download-section">
     <div class="container">
       <div class="download-deck-wide reveal-on-scroll">
         <div class="deck-header-row">
           <div>
-            <div class="detected-label">Selected Installation Platform</div>
+            <div class="detected-label">Selected Platform Setup Package</div>
             <div id="detectedOSName" class="detected-platform-title">Windows (64-bit)</div>
           </div>
 
@@ -557,7 +484,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
               <span>Download loom-setup.exe</span>
             </a>
             <a href="https://github.com/loomdb/loomdb/releases" target="_blank" class="btn-secondary-link">
-              <span>Release Notes &amp; Source ↗</span>
+              <span>Release Notes &amp; Verification ↗</span>
             </a>
           </div>
         </div>
@@ -565,7 +492,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
         <!-- Terminal Quick Install Command Box (Dynamically Synchronized) -->
         <div style="margin-bottom: 32px;">
           <div style="font-size: 0.76rem; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">
-            Terminal Command for Selected Platform:
+            Terminal One-Liner (Registers Service &amp; Adds 'loom' to PATH):
           </div>
           <div class="quick-install-box">
             <code id="quickInstallCmd" class="command-snippet">irm https://loomdb.dev/install.ps1 | iex</code>
@@ -574,7 +501,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
         </div>
 
         <!-- Standalone Single-File Installers by Platform (Interactive Switcher) -->
-        <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">
+        <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 14px;">
           Choose Machine Compatible Installer:
         </div>
         <div class="os-grid-wide">
@@ -583,9 +510,9 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
             <div>
               <div class="os-card-header">
                 <span class="os-card-title">Windows</span>
-                <span class="os-card-badge">Single .EXE</span>
+                <span class="os-card-badge">Native GUI Setup .EXE</span>
               </div>
-              <p class="os-card-desc">Self-contained executable wizard. Automatically configures LoomDB, updates PATH, and optionally installs service.</p>
+              <p class="os-card-desc">Standard Windows Setup Wizard dialog box (Next &gt;, Browse..., Cancel). Automatically configures LoomDB, updates PATH, and optionally installs service.</p>
             </div>
             <div class="os-card-action">
               <span>Select loom-setup.exe</span>
@@ -643,6 +570,7 @@ Type <span style="color: #fff;">.help</span>, <span style="color: #fff;">.tables
         <a href="#architecture" class="footer-link">Anatomy</a>
         <a href="#fields" class="footer-link">Why LoomDB</a>
         <a href="#benchmarks" class="footer-link">Benchmarks</a>
+        <a href="#quickstart" class="footer-link">SDKs</a>
         <a href="#downloads" class="footer-link">Download</a>
         <a href="https://github.com/loomdb/loomdb" target="_blank" class="footer-link">GitHub</a>
       </div>

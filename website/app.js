@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
   initOSSelection();
   initTerminalWithQuota();
-  initInstallerDialog();
+  initSDKTabs();
   initCopyButtons();
 });
 
@@ -274,54 +274,116 @@ function handleManualInput(input) {
   }, 50);
 }
 
-// 4. Graphical Installer Dialog Box Navigation
-let currentDialogStep = 0;
-const TOTAL_DIALOG_STEPS = 6;
+// 4. Developer SDK Code Tabs Switcher
+const SDK_EXAMPLES = {
+  rust: {
+    title: "main.rs — Embedded In-Process Zero-Copy Access",
+    code: `// Open or create a single-file portable container
+let db = loom_core::LoomDB::open("./app.loom")?;
 
-function setDialogStep(stepIndex) {
-  currentDialogStep = (stepIndex + TOTAL_DIALOG_STEPS) % TOTAL_DIALOG_STEPS;
+// Insert document with high-dimensional vector embedding
+db.collection("memories").insert(serde_json::json!({
+    "id": "mem_01",
+    "topic": "High-Performance Rust Storage",
+    "notes": "LoomDB achieves sub-512KB idle RAM overhead.",
+    "embedding": [0.12, 0.45, -0.22, 0.81]
+}))?;
 
-  // Update tabs
-  document.querySelectorAll('.dialog-step-tab').forEach((tab, i) => {
-    if (i === currentDialogStep) {
-      tab.classList.add('active');
-    } else {
-      tab.classList.remove('active');
+// Hybrid single-pass vector distance query with relational filter
+let hits = db.query(
+    "SELECT id, topic, notes FROM memories 
+     WHERE topic LIKE '%Rust%' 
+     ORDER BY cosine_similarity(embedding, [0.12, 0.45, -0.22, 0.81]) DESC 
+     LIMIT 1;"
+)?;
+println!("Found: {:?}", hits);`
+  },
+  python: {
+    title: "rag_agent.py — Python Local AI Memory Engine",
+    code: `import loomdb
+
+# Connect to single-file local container (Zero Docker, Zero Cloud bills)
+db = loomdb.open("./agent_memory.loom")
+
+# Insert document chunks with embeddings
+db.insert("knowledge", [
+    {
+        "id": "doc_991",
+        "content": "LoomDB compiles as a native C-ABI library for Python.",
+        "embedding": [0.041, -0.220, 0.880, 0.105],
+        "category": "architecture"
     }
-  });
+])
 
-  // Update content stages
-  document.querySelectorAll('.dialog-stage').forEach((stage, i) => {
-    if (i === currentDialogStep) {
-      stage.classList.add('active');
-    } else {
-      stage.classList.remove('active');
-    }
-  });
+# Fused hybrid vector search: vector cosine similarity + metadata filter
+results = db.vector_search(
+    collection="knowledge",
+    vector=[0.045, -0.231, 0.892, 0.112],
+    filter="category = 'architecture'",
+    top_k=3
+)
+for match in results:
+    print(f"[{match['score']:.4f}] {match['content']}")`
+  },
+  ts: {
+    title: "server.ts — TypeScript Client & Real-Time Live Queries",
+    code: `import { LoomDB } from '@loomdb/client';
 
-  const nextBtn = document.getElementById('dialogNextBtn');
-  if (nextBtn) {
-    nextBtn.textContent = currentDialogStep === TOTAL_DIALOG_STEPS - 1 ? 'Finish' : 'Next >';
+// Connect to local LoomDB background daemon
+const db = await LoomDB.connect('loom://127.0.0.1:8484');
+
+// Reactive Live Query with continuous push stream (No polling)
+const liveOrders = db.live("SELECT * FROM telemetry WHERE temp > 85.0");
+
+liveOrders.on('data', (point) => {
+  console.warn("Critical temperature reading:", point.device_id, point.temp);
+});
+
+// Execute atomic transaction
+await db.transaction(async (tx) => {
+  await tx.execute("INSERT INTO telemetry (device_id, temp) VALUES ($1, $2)", ["sensor_04", 89.2]);
+});`
+  },
+  cli: {
+    title: "Terminal Command Prompt / PowerShell Usage",
+    code: `C:\\> loom
+[LOOM_DB] Interactive Shell v0.1.0
+Mounted Container: ./data.loom
+
+loom> CREATE TABLE users (id UUID PRIMARY KEY, name VARCHAR, email VARCHAR UNIQUE);
+Query OK, 0 rows affected. Table 'users' initialized. (520.70µs)
+
+loom> INSERT INTO users (id, name, email) VALUES ('u1', 'Alice', 'alice@loomdb.io');
+Query OK, 1 row inserted. (278.40µs)
+
+loom> SELECT * FROM users;
++----+-------+-----------------+
+| id | name  | email           |
++----+-------+-----------------+
+| u1 | Alice | alice@loomdb.io |
++----+-------+-----------------+
+1 rows in set. (2.80µs)`
   }
-}
+};
 
-function initInstallerDialog() {
-  document.querySelectorAll('.dialog-step-tab').forEach(tab => {
+function initSDKTabs() {
+  const tabs = document.querySelectorAll('.sdk-tab');
+  const titleElem = document.getElementById('sdkCodeTitle');
+  const codeBlock = document.getElementById('sdkCodeBlock');
+
+  tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      const step = parseInt(tab.getAttribute('data-step'), 10);
-      if (!isNaN(step)) setDialogStep(step);
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const sdkKey = tab.getAttribute('data-sdk');
+      const example = SDK_EXAMPLES[sdkKey];
+      if (example && titleElem && codeBlock) {
+        titleElem.textContent = example.title;
+        codeBlock.textContent = example.code;
+      }
     });
   });
-
-  const nextBtn = document.getElementById('dialogNextBtn');
-  const backBtn = document.getElementById('dialogBackBtn');
-
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => setDialogStep(currentDialogStep + 1));
-  }
-  if (backBtn) {
-    backBtn.addEventListener('click', () => setDialogStep(currentDialogStep - 1));
-  }
 }
 
 // 5. Copy Command to Clipboard
