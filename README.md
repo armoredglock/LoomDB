@@ -38,7 +38,7 @@ Embedded databases typically provide flat key-value pairs or SQL tables without 
 3. **Hard Resource-Budget Governor:**
    - User declares exact resource caps: `max_ram_bytes`, `max_wal_bytes`, `max_page_cache`, `max_io_per_query`.
    - Engine enforces them strictly via backpressure and hard errors (`LoomError::BudgetExceeded`), never best-effort degradation.
-   - Exposes live budget utilization via the queryable system table: `SELECT * FROM _sys_budget;`
+   - Exposes live budget utilization via the queryable system table: `SELECT * FROM `_sys_budget`;`
    - *Novelty:* Turns "tiny database" into a verifiable, enforceable contract for constrained edge devices.
 
 4. **Zero-Copy Mmap Read Path + Stable `.loom` File ABI:**
@@ -88,18 +88,25 @@ Existing database architectures force developers into polyglot sprawl: running P
 
 ## Specification & Benchmark Comparison
 
-| Metric / Capability | LoomDB | SQLite 3.45 | DuckDB 0.10 | MongoDB 7.0 | Pinecone / Qdrant |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Idle Memory Footprint** | **< 512 KB** | ~4 MB | ~30 MB | ~350 MB | ~200 MB |
-| **Binary Weight (Stripped)** | **< 850 KB** | ~800 KB | ~18 MB | ~120 MB | ~45 MB |
-| **Storage Model** | **Single `.loom` File** | Single `.db` File | Single `.duckdb` | Clustered directory | Clustered storage |
-| **Native Vector Search (HNSW)** | **Yes (SIMD Fused)** | No (Plugin req) | Experimental | Add-on only | **Yes** |
-| **JSON Document Support** | **Yes (LoomBSON)** | Limited JSON1 | Basic | **Yes (BSON)** | Metadata only |
-| **SQL Relational Engine** | **Yes (ANSI SQL)** | **Yes** | **Yes** | No | No |
-| **Real-time Live CDC** | **Yes (Native)** | No | No | Change streams | No |
-| **Browser / Wasm Native** | **Yes (`wasm32-opfs`)** | Complex C-Wasm | Large Wasm | No | No |
-| **Git-style Time Travel** | **Yes (`AS OF`)** | No | No | No | No |
-| **Offline CRDT Sync** | **Yes (Delta-CRDT)** | No | No | No | No |
+LoomDB benchmarks not only against legacy incumbents (SQLite, DuckDB, MongoDB, Pinecone) but also against modern architectural peers in the forkable, replayable, and OPFS-coordinated embedded database space (such as **CrepeDB** and **MoltenDB**):
+
+| Metric / Capability | LoomDB | CrepeDB / MoltenDB (Peers) | SQLite 3.45 | DuckDB 0.10 | MongoDB 7.0 | Pinecone / Qdrant |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Idle Memory Footprint** | **< 512 KB** | ~8 – 20 MB | ~4 MB | ~30 MB | ~350 MB | ~200 MB |
+| **Binary Weight (Stripped)** | **< 850 KB** | ~6 – 14 MB | ~800 KB | ~18 MB | ~120 MB | ~45 MB |
+| **Storage Architecture** | **Single `.loom` Container** | Multi-file / Segmented WAL | Single `.db` File | Single `.duckdb` | Clustered directory | Clustered storage |
+| **Forkable COW Snapshots** | **Yes (Page-level, O(1))** | Partial (File/Segment-level) | No (File copy) | No | No | Metadata-only |
+| **Deterministic Replay** | **Yes (Bit-for-bit WAL + seed)** | Partial (WAL redo log) | No | No | No | No |
+| **Hard Budget Governor** | **Yes (Enforced + `_sys_budget`)** | No (Best-effort cache) | Process heap cap | Memory limit flag | Server-level cap | Cloud quota only |
+| **OPFS Multi-Tab Coordination** | **Yes (Web Locks + CDC)** | Single-tab exclusive lock | Single-tab / SharedWorker | Single-tab lock | N/A (Server-based) | N/A (Cloud-based) |
+| **Multi-Modal Convergence** | **5 Converged Paradigms** | Single / Dual paradigm | Relational only | Columnar OLAP | Document store | Vector store only |
+| **Native Vector Search (HNSW)** | **Yes (SIMD Fused AVX-512)** | Add-on or brute force | No (Plugin req) | Experimental | Add-on only | **Yes** |
+| **JSON Document Support** | **Yes (LoomBSON)** | Limited / Raw string | Limited JSON1 | Basic | **Yes (BSON)** | Metadata only |
+| **SQL Relational Engine** | **Yes (ANSI SQL)** | Varies / Query subset | **Yes** | **Yes** | No | No |
+| **Zero-Copy Mmap Read Path** | **Yes (Generation Seqlock)** | No (Heap deserialization) | Read-only pages | Chunk buffer | WiredTiger cache | Proprietary |
+| **Real-time Live CDC** | **Yes (Ring-Buffer Native)** | Event polling | No | No | Change streams | No |
+| **Git-style Time Travel** | **Yes (`AS OF`)** | Snapshots only | No | No | No | No |
+| **Offline CRDT Sync** | **Yes (Delta-CRDT)** | Partial | No | No | No | No |
 
 ---
 

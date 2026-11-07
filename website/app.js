@@ -176,6 +176,7 @@ function initContainerLayoutMap() {
 const BENCHMARK_DATA = {
   ram: [
     { name: 'LoomDB', score: '< 0.48 MB', width: '4%', isLoom: true },
+    { name: 'CrepeDB / MoltenDB', score: '~ 12 MB', width: '22%', isLoom: false },
     { name: 'SQLite', score: '~ 4.2 MB', width: '14%', isLoom: false },
     { name: 'DuckDB', score: '~ 32 MB', width: '38%', isLoom: false },
     { name: 'MongoDB', score: '~ 350 MB', width: '95%', isLoom: false },
@@ -183,6 +184,7 @@ const BENCHMARK_DATA = {
   ],
   latency: [
     { name: 'LoomDB', score: '0.38 ms', width: '5%', isLoom: true },
+    { name: 'CrepeDB / MoltenDB', score: '3.40 ms', width: '28%', isLoom: false },
     { name: 'SQLite', score: '1.85 ms', width: '20%', isLoom: false },
     { name: 'DuckDB', score: '11.4 ms', width: '44%', isLoom: false },
     { name: 'MongoDB', score: '165 ms', width: '92%', isLoom: false },
@@ -191,6 +193,7 @@ const BENCHMARK_DATA = {
   size: [
     { name: 'LoomDB', score: '< 0.85 MB', width: '4%', isLoom: true },
     { name: 'SQLite', score: '~ 0.80 MB', width: '4%', isLoom: false },
+    { name: 'CrepeDB / MoltenDB', score: '~ 8.5 MB', width: '24%', isLoom: false },
     { name: 'DuckDB', score: '~ 18 MB', width: '42%', isLoom: false },
     { name: 'MongoDB', score: '~ 120 MB', width: '95%', isLoom: false },
     { name: 'Pinecone', score: '~ 45 MB', width: '58%', isLoom: false },
